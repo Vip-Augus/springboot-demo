@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ExperimentMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Experiment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="brief_introduction" property="briefIntroduction" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="begin_period" property="beginPeriod" jdbcType="VARCHAR" />
+    <result column="end_period" property="endPeriod" jdbcType="VARCHAR" />
+    <result column="t_ids" property="tIds" jdbcType="VARCHAR" />
+    <result column="join_end_time" property="joinEndTime" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, brief_introduction, address, begin_period, end_period, t_ids, join_end_time, 
+    create_date, modify_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from experiment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByIds" resultMap="BaseResultMap">
+    <if test="ids != null and ids.size() > 0">
+      SELECT
+      <include refid="Base_Column_List" />
+      FROM experiment
+      WHERE id in
+      <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from experiment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Experiment" >
+    insert into experiment (id, name, brief_introduction, 
+      address, begin_period, end_period, 
+      t_ids, join_end_time, create_date)
+    values (gen_id('experiment'), #{name,jdbcType=VARCHAR}, #{briefIntroduction,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{beginPeriod,jdbcType=VARCHAR}, #{endPeriod,jdbcType=VARCHAR}, 
+      #{tIds,jdbcType=VARCHAR}, #{joinEndTime,jdbcType=VARCHAR}, sysdate() + '0')
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Experiment" >
+    update experiment
+    set name = #{name,jdbcType=VARCHAR},
+      brief_introduction = #{briefIntroduction,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      begin_period = #{beginPeriod,jdbcType=VARCHAR},
+      end_period = #{endPeriod,jdbcType=VARCHAR},
+      t_ids = #{tIds,jdbcType=VARCHAR},
+      join_end_time = #{joinEndTime,jdbcType=VARCHAR},
+      modify_date = sysdate() + '0'
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
