@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ExperimentUserMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.ExperimentUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ep_id" property="epId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ep_id, user_id, create_date, modify_date
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from experiment_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM experiment_user
+    WHERE user_id = #{userId, jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from experiment_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.example.demo.model.ExperimentUser" >
+    insert into experiment_user (id, ep_id, user_id, 
+      create_date)
+    values (gen_id('experiment_user'), #{epId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+      sysdate() + '0')
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentUser" >
+    update experiment_user
+    set ep_id = #{epId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      modify_date = sysdate() + '0'
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

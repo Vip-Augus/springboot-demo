@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ExperimentRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.ExperimentRecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ep_name" property="epName" jdbcType="VARCHAR" />
+    <result column="ep_file_url" property="epFileUrl" jdbcType="VARCHAR" />
+    <result column="ep_id" property="epId" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="VARCHAR" />
+    <result column="upload_end_time" property="uploadEndTime" jdbcType="VARCHAR" />
+    <result column="class_begin" property="classBegin" jdbcType="INTEGER" />
+    <result column="class_end" property="classEnd" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ep_name, ep_file_url, ep_id, date, upload_end_time, class_begin, class_end, address, 
+    create_date, modify_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from experiment_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByEPId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM experiment_record
+    WHERE ep_id = #{epId, jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from experiment_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.ExperimentRecord" >
+    insert into experiment_record (id, ep_name, ep_file_url, 
+      ep_id, date, upload_end_time, 
+      class_begin, class_end, address, 
+      create_date)
+    values (gen_id('experiment_record'), #{epName,jdbcType=VARCHAR}, #{epFileUrl,jdbcType=VARCHAR},
+      #{epId,jdbcType=INTEGER}, #{date,jdbcType=VARCHAR}, #{uploadEndTime,jdbcType=VARCHAR}, 
+      #{classBegin,jdbcType=INTEGER}, #{classEnd,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
+      sysdate() + '0')
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentRecord" >
+    update experiment_record
+    set ep_name = #{epName,jdbcType=VARCHAR},
+      ep_file_url = #{epFileUrl,jdbcType=VARCHAR},
+      ep_id = #{epId,jdbcType=INTEGER},
+      date = #{date,jdbcType=VARCHAR},
+      upload_end_time = #{uploadEndTime,jdbcType=VARCHAR},
+      class_begin = #{classBegin,jdbcType=INTEGER},
+      class_end = #{classEnd,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      modify_date = sysdate() + '0'
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
