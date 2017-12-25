@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
+import com.example.demo.service.FileManage;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,6 +29,10 @@ public class TestController {
 
     @Autowired
     private UserService userServiceImpl;
+
+    @Autowired
+    private FileManage fileManage;
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -67,6 +72,7 @@ public class TestController {
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void downFile(HttpServletRequest request, HttpServletResponse response) {
+        fileManage.getMinioClient();
         String filePath = "D://test/";
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
