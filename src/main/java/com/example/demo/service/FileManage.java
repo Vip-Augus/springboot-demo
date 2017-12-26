@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.util.File.UploadObject;
 import io.minio.MinioClient;
 
 /**
@@ -7,4 +8,7 @@ import io.minio.MinioClient;
  */
 public interface FileManage {
     MinioClient getMinioClient();
+
+    String upload(UploadObject object);
+
 }

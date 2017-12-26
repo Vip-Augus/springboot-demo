@@ -18,6 +18,8 @@ public class MinioConfigBean {
 
     private String secretKey;
 
+    private String bucketName;
+
     public String getIp() {
         return ip;
     }
@@ -40,5 +42,13 @@ public class MinioConfigBean {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 }
