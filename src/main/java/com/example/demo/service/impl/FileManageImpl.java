@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * Author JingQ on 2017/12/25.
@@ -19,7 +20,7 @@ import java.io.ByteArrayInputStream;
 @Service
 public class FileManageImpl implements FileManage {
 
-    private Logger logger = LoggerFactory.getLogger(FileManageImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(FileManageImpl.class);
 
     private MinioClient minioClient;
 
@@ -70,6 +71,22 @@ public class FileManageImpl implements FileManage {
             }
         }
         return url.toString();
+    }
+
+    @Override
+    public InputStream getInputStreamFromObject(UploadObject object) {
+        InputStream is = null;
+        minioClient = getMinioClient();
+        try {
+            checkBucketExists(minioClient, configBean.getBucketName());
+            logger.info(">>>>>>>>>>>>>>>>>>>正在下载");
+            minioClient.statObject(configBean.getBucketName(), object.getDir()+object.getFullName());
+            is = minioClient.getObject(configBean.getBucketName(), object.getDir()+object.getFullName());
+            logger.info(">>>>>>>>>>>>>>>>>>>下载成功");
+        } catch (Exception e) {
+            logger.error("下载失败", e);
+        }
+        return is;
     }
 
 
