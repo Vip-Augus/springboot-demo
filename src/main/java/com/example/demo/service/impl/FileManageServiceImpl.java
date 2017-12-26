@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.config.MinioConfigBean;
-import com.example.demo.service.FileManage;
+import com.example.demo.service.FileManageService;
 import com.example.demo.util.File.UploadObject;
 import io.minio.MinioClient;
 import org.apache.commons.io.IOUtils;
@@ -15,12 +15,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
+ * 文件上传和下载服务
  * Author JingQ on 2017/12/25.
  */
 @Service
-public class FileManageImpl implements FileManage {
+public class FileManageServiceImpl implements FileManageService {
 
-    private static Logger logger = LoggerFactory.getLogger(FileManageImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(FileManageServiceImpl.class);
 
     private MinioClient minioClient;
 
@@ -30,27 +31,10 @@ public class FileManageImpl implements FileManage {
     private MinioConfigBean configBean;
 
     @Override
-    public MinioClient getMinioClient() {
-        try {
-            if (minioClient == null) {
-                synchronized (FileManageImpl.class) {
-                    if (minioClient == null) {
-                        minioClient = new MinioClient(configBean.getIp(), configBean.getAccessKey(), configBean.getSecretKey());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return minioClient;
-    }
-
-    @Override
     public String upload(UploadObject object) {
         StringBuilder url = new StringBuilder();
         minioClient = getMinioClient();
         try {
-            checkBucketExists(minioClient, configBean.getBucketName());
             byte[] bytes = IOUtils.toByteArray(object.getIs());
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             String mimeType =  mimetypesFileTypeMap.getContentType(object.getFullName());
@@ -75,21 +59,45 @@ public class FileManageImpl implements FileManage {
 
     @Override
     public InputStream getInputStreamFromObject(UploadObject object) {
-        InputStream is = null;
+        InputStream is;
         minioClient = getMinioClient();
         try {
-            checkBucketExists(minioClient, configBean.getBucketName());
             logger.info(">>>>>>>>>>>>>>>>>>>正在下载");
             minioClient.statObject(configBean.getBucketName(), object.getDir()+object.getFullName());
             is = minioClient.getObject(configBean.getBucketName(), object.getDir()+object.getFullName());
-            logger.info(">>>>>>>>>>>>>>>>>>>下载成功");
+            logger.info(">>>>>>>>>>>>>>>>>>>下载成功" + object.getDir() + object.getFullName());
         } catch (Exception e) {
             logger.error("下载失败", e);
+            return null;
         }
         return is;
     }
 
+    /**
+     * DDL单例模式
+     * @return      minio
+     */
+    private MinioClient getMinioClient() {
+        try {
+            if (minioClient == null) {
+                synchronized (FileManageServiceImpl.class) {
+                    if (minioClient == null) {
+                        minioClient = new MinioClient(configBean.getIp(), configBean.getAccessKey(), configBean.getSecretKey());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return minioClient;
+    }
 
+    /**
+     * 判断Bucket是否创建--每次判断会耗时,所以直接创建好,不校验了
+     * @param client        minio
+     * @param bucketName    bucketName
+     * @throws Exception    异常
+     */
     private void checkBucketExists(MinioClient client, String bucketName) throws Exception {
         boolean result = client.bucketExists(bucketName);
         if (!result) {
