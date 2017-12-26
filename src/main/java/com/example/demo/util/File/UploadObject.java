@@ -19,6 +19,11 @@ public class UploadObject {
     public UploadObject() {
     }
 
+    public UploadObject(String fullName, String dir) {
+        this.fullName = fullName;
+        this.dir = dir;
+    }
+
     public UploadObject(InputStream is, String fullName, String dir) {
         this.is = is;
         this.fullName = fullName;
