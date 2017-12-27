@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.service.FileManageService;
 import com.example.demo.service.UserService;
-import com.example.demo.util.File.UploadObject;
+import com.example.demo.util.file.UploadObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

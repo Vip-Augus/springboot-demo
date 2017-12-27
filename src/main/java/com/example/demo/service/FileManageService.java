@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.util.File.UploadObject;
+import com.example.demo.util.file.UploadObject;
 
 import java.io.InputStream;
 

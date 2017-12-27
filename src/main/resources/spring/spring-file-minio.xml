@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 创建MinioClient工厂 -->
+    <bean id="minioClientPooledFactory" class="com.example.demo.util.file.MinioClientPooledFactory">
+        <property name="ip" value="${minio.ip}"/>
+        <property name="accessKeyId" value="${minio.accessKey}"/>
+        <property name="accessKeySecret" value="${minio.secretKey}"/>
+    </bean>
+
+    <!-- 对象池参数设置 -->
+    <bean id="minioGenericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="8"/>
+        <property name="maxIdle" value="8"/>
+        <property name="minIdle" value="0"/>
+        <!-- 取消JMX的激活 -->
+        <property name="jmxEnabled" value="false"/>
+    </bean>
+
+    <!-- 对象池 -->
+    <bean id="minioGenericObjectPool" class="org.apache.commons.pool2.impl.GenericObjectPool">
+        <constructor-arg index="0" ref="minioClientPooledFactory"/>
+        <constructor-arg index="1" ref="minioGenericObjectPoolConfig"/>
+    </bean>
+
+
+</beans>

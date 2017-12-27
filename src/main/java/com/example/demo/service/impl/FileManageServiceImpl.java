@@ -2,15 +2,17 @@ package com.example.demo.service.impl;
 
 import com.example.demo.config.MinioConfigBean;
 import com.example.demo.service.FileManageService;
-import com.example.demo.util.File.UploadObject;
+import com.example.demo.util.file.UploadObject;
 import io.minio.MinioClient;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -30,17 +32,20 @@ public class FileManageServiceImpl implements FileManageService {
     @Autowired
     private MinioConfigBean configBean;
 
+    @Resource(name = "minioGenericObjectPool")
+    private GenericObjectPool<MinioClient> genericObjectPool;
+
     @Override
     public String upload(UploadObject object) {
         StringBuilder url = new StringBuilder();
-        minioClient = getMinioClient();
         try {
+            minioClient = genericObjectPool.borrowObject();
             byte[] bytes = IOUtils.toByteArray(object.getIs());
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             String mimeType =  mimetypesFileTypeMap.getContentType(object.getFullName());
             logger.info(">>>>>>>>>>>>>>>>>>>正在上传到Minio");
             minioClient.putObject(configBean.getBucketName(), object.getDir() + object.getFullName(),bis, bytes.length, mimeType);
-            url.append(configBean.getIp()).append("/").append(configBean.getBucketName()).append("/").append(object.getDir()).append(object.getFullName());
+            url.append(configBean.getIp()).append("/").append(object.getDir()).append(object.getFullName());
             bis.close();
             logger.info(">>>>>>>>>>>>>>>>>>>upload success>>>>" + url);
         } catch (Exception e) {
@@ -53,6 +58,7 @@ public class FileManageServiceImpl implements FileManageService {
             } catch (Exception e) {
                 logger.error("输入流关闭失败", e);
             }
+            genericObjectPool.returnObject(minioClient);
         }
         return url.toString();
     }
@@ -60,8 +66,8 @@ public class FileManageServiceImpl implements FileManageService {
     @Override
     public InputStream getInputStreamFromObject(UploadObject object) {
         InputStream is;
-        minioClient = getMinioClient();
         try {
+            minioClient = genericObjectPool.borrowObject();
             logger.info(">>>>>>>>>>>>>>>>>>>正在下载");
             minioClient.statObject(configBean.getBucketName(), object.getDir()+object.getFullName());
             is = minioClient.getObject(configBean.getBucketName(), object.getDir()+object.getFullName());
@@ -69,6 +75,12 @@ public class FileManageServiceImpl implements FileManageService {
         } catch (Exception e) {
             logger.error("下载失败", e);
             return null;
+        } finally {
+            try {
+                genericObjectPool.returnObject(minioClient);
+            } catch (Exception e) {
+                logger.error("归还失败", e);
+            }
         }
         return is;
     }
