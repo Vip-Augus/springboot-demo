@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 /**
+ * Minio配置参数
  * Author JingQ on 2017/12/25.
  */
 @Configuration
@@ -19,6 +20,8 @@ public class MinioConfigBean {
     private String secretKey;
 
     private String bucketName;
+
+    private String staticUrl;
 
     public String getIp() {
         return ip;
@@ -50,5 +53,13 @@ public class MinioConfigBean {
 
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
+    }
+
+    public String getStaticUrl() {
+        return staticUrl;
+    }
+
+    public void setStaticUrl(String staticUrl) {
+        this.staticUrl = staticUrl;
     }
 }
