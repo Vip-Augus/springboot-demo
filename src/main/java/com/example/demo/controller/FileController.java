@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.MinioConfigBean;
 import com.example.demo.service.FileManageService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.file.UploadObject;
@@ -39,6 +40,9 @@ public class FileController {
 
     @Autowired
     private FileManageService fileManageService;
+
+    @Autowired
+    private MinioConfigBean minioConfigBean;
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -81,7 +85,7 @@ public class FileController {
     public void downFile(@RequestBody UploadObject uploadObject, HttpServletRequest request, HttpServletResponse response) {
         InputStream is = fileManageService.getInputStreamFromObject(uploadObject);
         if (is == null) {
-            response.setHeader("NULL", "000000");
+            response.setHeader("code", "NULL000000");
             return;
         }
         BufferedInputStream bis = null;

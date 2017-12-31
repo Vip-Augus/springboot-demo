@@ -25,8 +25,6 @@ public class FileManageServiceImpl implements FileManageService {
 
     private static Logger logger = LoggerFactory.getLogger(FileManageServiceImpl.class);
 
-    private MinioClient minioClient;
-
     private static MimetypesFileTypeMap mimetypesFileTypeMap;
 
     @Autowired
@@ -38,6 +36,7 @@ public class FileManageServiceImpl implements FileManageService {
     @Override
     public String upload(UploadObject object) {
         StringBuilder url = new StringBuilder();
+        MinioClient minioClient = null;
         try {
             minioClient = genericObjectPool.borrowObject();
             byte[] bytes = IOUtils.toByteArray(object.getIs());
@@ -45,7 +44,7 @@ public class FileManageServiceImpl implements FileManageService {
             String mimeType =  mimetypesFileTypeMap.getContentType(object.getFullName());
             logger.info(">>>>>>>>>>>>>>>>>>>正在上传到Minio");
             minioClient.putObject(configBean.getBucketName(), object.getDir() + object.getFullName(),bis, bytes.length, mimeType);
-            url.append(configBean.getIp()).append("/").append(object.getDir()).append(object.getFullName());
+            url.append(configBean.getStaticUrl()).append(object.getDir()).append(object.getFullName());
             bis.close();
             logger.info(">>>>>>>>>>>>>>>>>>>upload success>>>>" + url);
         } catch (Exception e) {
@@ -66,6 +65,7 @@ public class FileManageServiceImpl implements FileManageService {
     @Override
     public InputStream getInputStreamFromObject(UploadObject object) {
         InputStream is;
+        MinioClient minioClient = null;
         try {
             minioClient = genericObjectPool.borrowObject();
             logger.info(">>>>>>>>>>>>>>>>>>>正在下载");
@@ -79,30 +79,25 @@ public class FileManageServiceImpl implements FileManageService {
             try {
                 genericObjectPool.returnObject(minioClient);
             } catch (Exception e) {
-                logger.error("归还失败", e);
+                logger.error("归还失败");
             }
         }
         return is;
     }
 
-    /**
-     * DDL单例模式
-     * @return      minio
-     */
-    private MinioClient getMinioClient() {
+    @Override
+    public void deleteObject(String objectKey) {
+        MinioClient client = null;
         try {
-            if (minioClient == null) {
-                synchronized (FileManageServiceImpl.class) {
-                    if (minioClient == null) {
-                        minioClient = new MinioClient(configBean.getIp(), configBean.getAccessKey(), configBean.getSecretKey());
-                    }
-                }
-            }
+            client = genericObjectPool.borrowObject();
+            client.removeObject(configBean.getBucketName(), objectKey);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Delete object failed. bucket="+configBean.getBucketName()+" key="+objectKey+", due to " + e.getMessage());
+        } finally {
+            genericObjectPool.returnObject(client);
         }
-        return minioClient;
     }
+
 
     /**
      * 判断Bucket是否创建--每次判断会耗时,所以直接创建好,不校验了
