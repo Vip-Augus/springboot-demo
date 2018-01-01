@@ -1,20 +1,17 @@
-package com.example.demo.model;
+package com.example.demo.model.dto;
 
 import java.io.Serializable;
 
 /**
- * 用户
- * Author JingQ on 2017/12/24.
+ * Author by JingQ on 2018/1/1
  */
-public class User implements Serializable{
+public class UserDTO implements Serializable{
 
-    private static final long serialVersionUID = -883785472459846245L;
+    private static final long serialVersionUID = 3284926612682375926L;
 
     private Integer id;
 
     private String idNumber;
-
-    private String password;
 
     private String name;
 
@@ -27,12 +24,6 @@ public class User implements Serializable{
     private Integer collegeId;
 
     private Integer type;
-
-    private String createDate;
-
-    private String modifyDate;
-
-    private String salt;
 
     public Integer getId() {
         return id;
@@ -47,7 +38,7 @@ public class User implements Serializable{
     }
 
     public void setIdNumber(String idNumber) {
-        this.idNumber = idNumber == null ? null : idNumber.trim();
+        this.idNumber = idNumber;
     }
 
     public String getName() {
@@ -55,15 +46,7 @@ public class User implements Serializable{
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.name = name;
     }
 
     public String getPhone() {
@@ -71,7 +54,7 @@ public class User implements Serializable{
     }
 
     public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+        this.phone = phone;
     }
 
     public String getBirthday() {
@@ -79,7 +62,7 @@ public class User implements Serializable{
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = birthday == null ? null : birthday.trim();
+        this.birthday = birthday;
     }
 
     public String getAddress() {
@@ -87,7 +70,7 @@ public class User implements Serializable{
     }
 
     public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+        this.address = address;
     }
 
     public Integer getCollegeId() {
@@ -106,33 +89,9 @@ public class User implements Serializable{
         this.type = type;
     }
 
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate == null ? null : createDate.trim();
-    }
-
-    public String getModifyDate() {
-        return modifyDate;
-    }
-
-    public void setModifyDate(String modifyDate) {
-        this.modifyDate = modifyDate == null ? null : modifyDate.trim();
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDTO{" +
                 "id=" + id +
                 ", idNumber='" + idNumber + '\'' +
                 ", name='" + name + '\'' +
@@ -141,8 +100,6 @@ public class User implements Serializable{
                 ", address='" + address + '\'' +
                 ", collegeId=" + collegeId +
                 ", type=" + type +
-                ", createDate='" + createDate + '\'' +
-                ", modifyDate='" + modifyDate + '\'' +
                 '}';
     }
 }
