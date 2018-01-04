@@ -16,7 +16,7 @@ public class Experiment implements Serializable{
 
     private String briefIntroduction;
 
-    private String address;
+    private Integer classroomId;
 
     private String beginPeriod;
 
@@ -54,12 +54,12 @@ public class Experiment implements Serializable{
         this.briefIntroduction = briefIntroduction == null ? null : briefIntroduction.trim();
     }
 
-    public String getAddress() {
-        return address;
+    public Integer getClassroomId() {
+        return classroomId;
     }
 
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+    public void setClassroomId(Integer classroomId) {
+        this.classroomId = classroomId;
     }
 
     public String getBeginPeriod() {
@@ -116,7 +116,7 @@ public class Experiment implements Serializable{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", briefIntroduction='" + briefIntroduction + '\'' +
-                ", address='" + address + '\'' +
+                ", classroomId='" + classroomId + '\'' +
                 ", beginPeriod='" + beginPeriod + '\'' +
                 ", endPeriod='" + endPeriod + '\'' +
                 ", tIds='" + tIds + '\'' +

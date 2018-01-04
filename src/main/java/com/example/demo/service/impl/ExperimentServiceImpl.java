@@ -6,6 +6,8 @@ import com.example.demo.service.ExperimentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Author JingQ on 2017/12/24.
  */
@@ -31,7 +33,13 @@ public class ExperimentServiceImpl implements ExperimentService{
     }
 
     @Override
-    public int insert(Experiment record) {
-        return experimentMapper.insert(record);
+    public Experiment add(Experiment record) {
+        experimentMapper.insert(record);
+        return record;
+    }
+
+    @Override
+    public List<Experiment> getByIds(List<Integer> ids) {
+        return experimentMapper.selectByIds(ids);
     }
 }

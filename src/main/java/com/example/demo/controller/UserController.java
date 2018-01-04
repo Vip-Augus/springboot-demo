@@ -60,7 +60,7 @@ public class UserController {
             return (JSON) JSON.toJSON(result);
         }
         try {
-            userServiceImpl.insert(userParam);
+            userServiceImpl.add(userParam);
         } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);

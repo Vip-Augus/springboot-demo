@@ -34,9 +34,12 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.College" >
+    <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+      SELECT gen_id('college') as id
+    </selectKey>
     insert into college (id, name, address, 
       brief_introduction, create_date)
-    values (gen_id('college'), #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+    values (#{id, jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
       #{briefIntroduction,jdbcType=VARCHAR}, sysdate() + '0'
       )
   </insert>

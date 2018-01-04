@@ -37,14 +37,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insert(User record) {
+    public User add(User record) {
         //接收到用户自己设定的密码后，插入数据中，进行加密
         //加密算法password = md5(md5(password) + salt))
         String salt = UUID.randomUUID().toString();
         String password = MD5Util.genMD5(MD5Util.genMD5(record.getPassword()) + salt);
         record.setSalt(salt);
         record.setPassword(password);
-        return userMapper.insert(record);
+        userMapper.insert(record);
+        return record;
     }
 
     @Override
