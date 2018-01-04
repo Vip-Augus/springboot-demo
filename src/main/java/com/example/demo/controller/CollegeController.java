@@ -23,7 +23,7 @@ public class CollegeController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public void addCollege(@RequestBody College college, HttpServletRequest request) {
-        collegeServiceImpl.insert(college);
+        collegeServiceImpl.add(college);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)

@@ -26,7 +26,7 @@ public class ExperimentRecord implements Serializable{
 
     private Integer classEnd;
 
-    private String address;
+    private Integer classroomId;
 
     private String createDate;
 
@@ -96,12 +96,12 @@ public class ExperimentRecord implements Serializable{
         this.classEnd = classEnd;
     }
 
-    public String getAddress() {
-        return address;
+    public Integer getClassroomId() {
+        return classroomId;
     }
 
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+    public void setClassroomId(Integer classroomId) {
+        this.classroomId = classroomId;
     }
 
     public String getCreateDate() {
@@ -131,7 +131,7 @@ public class ExperimentRecord implements Serializable{
                 ", uploadEndTime='" + uploadEndTime + '\'' +
                 ", classBegin=" + classBegin +
                 ", classEnd=" + classEnd +
-                ", address='" + address + '\'' +
+                ", classroomId='" + classroomId + '\'' +
                 ", createDate='" + createDate + '\'' +
                 ", modifyDate='" + modifyDate + '\'' +
                 '}';

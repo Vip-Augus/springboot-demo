@@ -36,11 +36,14 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.User" >
+    <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+      SELECT gen_id('user') as id
+    </selectKey>
     insert into `user` (id, id_number, name, password,
-      phone, birthday, address, 
+      phone, birthday, address,
       college_id, type, salt, create_date)
-    values (gen_id('user'), #{idNumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
-      #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+    values (#{id, jdbcType=INTEGER}, #{idNumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
       #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{salt, jdbcType=VARCHAR}, sysdate() + '0')
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.model.User" >

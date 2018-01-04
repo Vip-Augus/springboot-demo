@@ -21,8 +21,20 @@ public class ListResult<T> extends Result {
         this.list = list;
     }
 
+    public void returnError(String errorMessage) {
+        setErrorMessage(errorMessage);
+    }
+
     public void returnError(String errorMessage, ErrorContext errorContext) {
         setErrorMessage(errorMessage);
         setErrorContext(errorContext);
+    }
+
+    public List<T> getList() {
+        return list;
+    }
+
+    public void setList(List<T> list) {
+        this.list = list;
     }
 }

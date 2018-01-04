@@ -31,7 +31,8 @@ public class CollegeServiceImpl implements CollegeService{
     }
 
     @Override
-    public int insert(College record) {
-        return collegeMapper.insert(record);
+    public College add(College record) {
+        collegeMapper.insert(record);
+        return record;
     }
 }

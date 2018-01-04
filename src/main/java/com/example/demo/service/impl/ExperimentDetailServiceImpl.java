@@ -31,7 +31,8 @@ public class ExperimentDetailServiceImpl implements ExperimentDetailService {
     }
 
     @Override
-    public int insert(ExperimentDetail record) {
-        return experimentDetailMapper.insert(record);
+    public ExperimentDetail add(ExperimentDetail record) {
+        experimentDetailMapper.insert(record);
+        return record;
     }
 }
