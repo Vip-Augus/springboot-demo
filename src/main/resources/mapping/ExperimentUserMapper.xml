@@ -46,6 +46,9 @@
       <foreach collection="userIds" index="index" item="userId" separator=",">
         (gen_id('experiment_user'), #{epId, jdbcType=INTEGER}, #{userId, jdbcType=INTEGER}, sysdate() + '0')
       </foreach>
+      on DUPLICATE key update
+
+      modify_date = sysdate() + '0'
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentUser" >
