@@ -7,8 +7,8 @@ import com.example.demo.util.MD5Util;
 import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -60,5 +60,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByIdNumber(String idNumber, Integer type) {
         return userMapper.selectByIdNumber(idNumber, type);
+    }
+
+    @Override
+    public List<User> getByIdNumbers(List<String> idNumbers, Integer type) {
+        return userMapper.selectByIdNumbers(idNumbers, type);
     }
 }

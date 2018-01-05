@@ -24,12 +24,24 @@
     from `user`
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByIdNumber" resultType="user">
+  <select id="selectByIdNumber" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
     from `user`
     WHERE id_number = #{idNumber, jdbcType=VARCHAR }
     AND type = #{type, jdbcType=INTEGER}
+  </select>
+  <select id="selectByIdNumbers" resultMap="BaseResultMap">
+    <if test="idNumbers != null and idNumbers.size() > 0">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM `user`
+    WHERE id_number in
+    <foreach collection="idNumbers" separator="," open="(" index="index" item="idNumber" close=")">
+      #{idNumber}
+    </foreach>
+    and type = #{type, jdbcType=INTEGER}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from `user`
