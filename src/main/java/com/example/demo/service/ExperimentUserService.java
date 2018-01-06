@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.ExperimentUser;
 import com.example.demo.base.BaseServiceTemplate;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
