@@ -10,9 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -96,6 +98,31 @@ public class FileManageServiceImpl implements FileManageService {
         } finally {
             genericObjectPool.returnObject(client);
         }
+    }
+
+    @Override
+    public String upload(MultipartFile file, String dirPath) {
+        String url = null;
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
+            BufferedInputStream bis = null;
+            try {
+                bis = new BufferedInputStream(file.getInputStream());
+                UploadObject object = new UploadObject(bis, fileName, dirPath);
+                url = upload(object);
+            } catch (Exception ex) {
+                logger.error("", ex);
+            } finally {
+                try {
+                    if (bis != null) {
+                        bis.close();
+                    }
+                } catch (Exception e) {
+                    logger.error("", e);
+                }
+            }
+        }
+        return url;
     }
 
 

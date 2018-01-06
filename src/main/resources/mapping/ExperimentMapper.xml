@@ -8,13 +8,14 @@
     <result column="classroom_id" property="classroomId" jdbcType="INTEGER" />
     <result column="begin_period" property="beginPeriod" jdbcType="VARCHAR" />
     <result column="end_period" property="endPeriod" jdbcType="VARCHAR" />
+    <result column="course_id" property="courseId" jdbcType="INTEGER" />
     <result column="t_ids" property="tIds" jdbcType="VARCHAR" />
     <result column="join_end_time" property="joinEndTime" jdbcType="VARCHAR" />
     <result column="create_date" property="createDate" jdbcType="VARCHAR" />
     <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, brief_introduction, classroom_id, begin_period, end_period, t_ids, join_end_time,
+    id, name, brief_introduction, classroom_id, begin_period, end_period, course_id, t_ids, join_end_time,
     create_date, modify_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -42,12 +43,12 @@
     <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
       SELECT gen_id('experiment') as id
     </selectKey>
-    insert into experiment (id, name, brief_introduction, 
-      classroom_id, begin_period, end_period,
+    insert into experiment (id, name, brief_introduction,
+      classroom_id, begin_period, end_period, course_id,
       t_ids, join_end_time, create_date)
     values (gen_id('experiment'), #{name,jdbcType=VARCHAR}, #{briefIntroduction,jdbcType=VARCHAR},
       #{classroomId,jdbcType=INTEGER}, #{beginPeriod,jdbcType=VARCHAR}, #{endPeriod,jdbcType=VARCHAR},
-      #{tIds,jdbcType=VARCHAR}, #{joinEndTime,jdbcType=VARCHAR}, sysdate() + '0')
+      #{courseId, jdbcType=INTEGER}, #{tIds,jdbcType=VARCHAR}, #{joinEndTime,jdbcType=VARCHAR}, sysdate() + '0')
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Experiment" >
     update experiment
@@ -56,6 +57,7 @@
       classroom_id = #{classroomId,jdbcType=INTEGER},
       begin_period = #{beginPeriod,jdbcType=VARCHAR},
       end_period = #{endPeriod,jdbcType=VARCHAR},
+      course_id = #{courseId, jdbcType=INTEGER},
       t_ids = #{tIds,jdbcType=VARCHAR},
       join_end_time = #{joinEndTime,jdbcType=VARCHAR},
       modify_date = sysdate() + '0'

@@ -22,6 +22,8 @@ public class Experiment implements Serializable{
 
     private String endPeriod;
 
+    private Integer courseId;
+
     private String tIds;
 
     private String joinEndTime;
@@ -76,6 +78,14 @@ public class Experiment implements Serializable{
 
     public void setEndPeriod(String endPeriod) {
         this.endPeriod = endPeriod == null ? null : endPeriod.trim();
+    }
+
+    public Integer getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
     }
 
     public String gettIds() {
