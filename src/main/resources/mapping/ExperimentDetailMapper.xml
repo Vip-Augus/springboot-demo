@@ -39,10 +39,13 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.ExperimentDetail" >
+    <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+      SELECT gen_id('experiment_detail') as id
+    </selectKey>
     insert into experiment_detail (id, ep_file_url, ep_file_name, 
       upload_date, create_date,
       ep_id, ep_record_id, user_id)
-    values (gen_id('experiment_detail'), #{epFileUrl,jdbcType=VARCHAR}, #{epFileName,jdbcType=VARCHAR},
+    values (#{id, jdbcType=INTEGER}, #{epFileUrl,jdbcType=VARCHAR}, #{epFileName,jdbcType=VARCHAR},
       sysdate() + '0', sysdate() + '0',
       #{epId,jdbcType=INTEGER}, #{epRecordId,jdbcType=INTEGER}, #{userId, jdbcType=INTEGER})
   </insert>

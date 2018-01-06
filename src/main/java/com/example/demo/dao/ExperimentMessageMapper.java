@@ -2,10 +2,7 @@ package com.example.demo.dao;
 
 import com.example.demo.base.BaseMapperTemplate;
 import com.example.demo.model.ExperimentMessage;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +11,7 @@ import java.util.List;
 /**
  * Created by GJW on 2018/1/4.
  */
+@Mapper
 public interface ExperimentMessageMapper extends BaseMapperTemplate<ExperimentMessage> {
 
     /**
@@ -66,4 +64,16 @@ public interface ExperimentMessageMapper extends BaseMapperTemplate<ExperimentMe
      * @return
      */
     int updateStatus(@Param("id") int id, @Param("status") int status);
+
+    @Override
+    ExperimentMessage selectByPrimaryKey(Integer id);
+
+    @Override
+    int deleteByPrimaryKey(Integer id);
+
+    @Override
+    int insert(ExperimentMessage record);
+
+    @Override
+    int updateByPrimaryKey(ExperimentMessage record);
 }
