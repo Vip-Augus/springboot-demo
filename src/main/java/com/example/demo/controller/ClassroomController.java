@@ -2,7 +2,11 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.Classroom;
+import com.example.demo.model.ExperimentRecord;
+import com.example.demo.model.dto.ClassroomQueryParam;
 import com.example.demo.service.ClassroomService;
+import com.example.demo.service.ExperimentRecordService;
+import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 实验室地点控制器
@@ -24,6 +29,9 @@ public class ClassroomController {
 
     @Autowired
     private ClassroomService classroomServiceImpl;
+
+    @Autowired
+    private ExperimentRecordService experimentRecordServiceImpl;
 
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
@@ -56,6 +64,22 @@ public class ClassroomController {
     @ResponseBody
     public void deleteClassroom(@RequestParam("id") Integer id, HttpServletRequest request) {
         classroomServiceImpl.deleteById(id);
+    }
+
+    @RequestMapping(value = "query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON query(@RequestBody ClassroomQueryParam queryParam, HttpServletRequest request) {
+        ListResult<Classroom> result = new ListResult<>();
+        result.returnSuccess(classroomServiceImpl.getList(queryParam));
+        return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "details", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON queryDetail(@RequestParam("id") Integer id, HttpServletRequest request) {
+        ListResult<ExperimentRecord> result = new ListResult<>();
+        result.returnSuccess(experimentRecordServiceImpl.getListByClassroomId(id));
+        return (JSON) JSON.toJSON(result);
     }
 
 }

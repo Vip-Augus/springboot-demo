@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.util.file.UploadObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 
@@ -29,4 +30,11 @@ public interface FileManageService {
      */
     void deleteObject(String objectKey);
 
+    /**
+     * 上传文件，获得外链地址
+     * @param file      文件
+     * @param dirPath   文件目录
+     * @return          外链
+     */
+    String upload(MultipartFile file, String dirPath);
 }
