@@ -86,7 +86,7 @@ public class ExperimentController {
         return (JSON) JSON.toJSON(result);
     }
 
-    @RequestMapping(value = "electiveAll", method = RequestMethod.GET)
+    @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public JSON elective(HttpServletRequest request) {
         ListResult<ExperimentDTO> result = new ListResult<>();

@@ -21,6 +21,8 @@ public class ExperimentDTO extends BaseDTO {
 
     private String endPeriod;
 
+    private Integer courseId;
+
     private String tIds;
 
     private String joinEndTime;
@@ -65,6 +67,14 @@ public class ExperimentDTO extends BaseDTO {
 
     public void setEndPeriod(String endPeriod) {
         this.endPeriod = endPeriod;
+    }
+
+    public Integer getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
     }
 
     public String gettIds() {
