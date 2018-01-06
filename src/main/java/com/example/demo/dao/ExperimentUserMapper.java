@@ -27,7 +27,4 @@ public interface ExperimentUserMapper extends BaseMapperTemplate<ExperimentUser>
      * @return          插入的数量
      */
     int batchInsert(@Param("epId") Integer epId, @Param("userIds") List<Integer> userIds);
-
-
-    List<Integer> selectUserIdsByEpId(@Param("epId") Integer epId);
 }
