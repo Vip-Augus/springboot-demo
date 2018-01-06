@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ExperimentMessageMapper" >
+  <sql id="table">message</sql>
+  <sql id="selectFields">id, from_id, to_id, content,created_date,has_read, conversation_id
+  </sql>
+  <sql id="insertFields">from_id , to_id, content, has_read, created_date, conversation_id </sql>
+  <select id="getConversitionDetail" resultType="com.example.demo.model.ExperimentMessage">
+    SELECT
+    <include refid="selectFields"/>
+    FROM
+    <include refid="table"/>
+    WHERE conversation_id = #{conversationId}
+    ORDER BY created_date DESC
+    LIMIT #{offset},#{limit}
+  </select>
+
+  <insert id="addMessage" parameterType="com.example.demo.model.ExperimentMessage">
+    INSERT INTO
+    message
+    (<include refid="insertFields"/>)
+    VALUES
+    (#{fromId},#{toId},#{content},#{hasRead},#{createdDate},#{conversationId})
+  </insert>
+
+  <select id="getConversitionList" parameterType="java.lang.Integer" resultType="com.example.demo.model.ExperimentMessage">
+    SELECT
+    <include refid="insertFields"/>, COUNT (id) as id
+    FROM
+    ( SELECT * FROM message
+      WHERE
+      from_id=#{userId} or to_id=#{userId}
+      order by created_date desc
+    ) tt
+    group by conversation_id order by created_date desc limit #{offset}, #{limit}
+  </select>
+
+
+  <select id="getCommentCount" parameterType="java.lang.Integer">
+    SELECT COUNT (id)
+    FROM
+    message
+    WHERE
+    entity_type = #{entityType} and entity_id = #{entityId}
+  </select>
+
+  <select id="getUnreadCount" parameterType="java.lang.Integer">
+    SELECT COUNT (id)
+    FROM
+    message
+    WHERE
+    has_read=0 and to_id=#{userId} and conversation_id=#{conversationId}
+  </select>
+
+  <update id="updateStatus" parameterType="java.lang.Integer">
+    UPDATE message
+    SET status = #{status} where id = #{id}
+  </update>
+</mapper>
