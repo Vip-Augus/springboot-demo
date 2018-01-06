@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,5 +64,14 @@ public class ExperimentUserServiceImpl implements ExperimentUserService {
             return 0;
         }
         return experimentUserMapper.batchInsert(epId, userIds);
+    }
+
+    @Override
+    public List<Integer> getUserIdsByEpId(Integer epId) {
+        List<Integer> userIds = experimentUserMapper.selectUserIdsByEpId(epId);
+        if(CollectionUtils.isEmpty(userIds)) {
+            return Collections.emptyList();
+        }
+        return userIds;
     }
 }
