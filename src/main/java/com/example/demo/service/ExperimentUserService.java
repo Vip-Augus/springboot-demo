@@ -25,6 +25,4 @@ public interface ExperimentUserService extends BaseServiceTemplate<ExperimentUse
      * @return          批量插入的数量
      */
     int batchAdd(Integer epId, List<Integer> userIds);
-
-    List<Integer> getUserIdsByEpId(Integer epId);
 }

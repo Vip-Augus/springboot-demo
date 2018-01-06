@@ -64,12 +64,4 @@ public class ExperimentUserServiceImpl implements ExperimentUserService {
         }
         return experimentUserMapper.batchInsert(epId, userIds);
     }
-
-    @Override
-    public List<Integer> getUserIdsByEpId(Integer epId) {
-        if(epId < 0) {
-            return null;
-        }
-        return experimentUserMapper.selectUserIdsByEpId(epId);
-    }
 }
