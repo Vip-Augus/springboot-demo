@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="brief_introduction" property="briefIntroduction" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="classroom_id" property="classroomId" jdbcType="INTEGER" />
     <result column="begin_period" property="beginPeriod" jdbcType="VARCHAR" />
     <result column="end_period" property="endPeriod" jdbcType="VARCHAR" />
     <result column="t_ids" property="tIds" jdbcType="VARCHAR" />
@@ -14,7 +14,7 @@
     <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, brief_introduction, address, begin_period, end_period, t_ids, join_end_time, 
+    id, name, brief_introduction, classroom_id, begin_period, end_period, t_ids, join_end_time,
     create_date, modify_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -39,18 +39,21 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.Experiment" >
+    <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+      SELECT gen_id('experiment') as id
+    </selectKey>
     insert into experiment (id, name, brief_introduction, 
-      address, begin_period, end_period, 
+      classroom_id, begin_period, end_period,
       t_ids, join_end_time, create_date)
     values (gen_id('experiment'), #{name,jdbcType=VARCHAR}, #{briefIntroduction,jdbcType=VARCHAR},
-      #{address,jdbcType=VARCHAR}, #{beginPeriod,jdbcType=VARCHAR}, #{endPeriod,jdbcType=VARCHAR}, 
+      #{classroomId,jdbcType=INTEGER}, #{beginPeriod,jdbcType=VARCHAR}, #{endPeriod,jdbcType=VARCHAR},
       #{tIds,jdbcType=VARCHAR}, #{joinEndTime,jdbcType=VARCHAR}, sysdate() + '0')
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Experiment" >
     update experiment
     set name = #{name,jdbcType=VARCHAR},
       brief_introduction = #{briefIntroduction,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
+      classroom_id = #{classroomId,jdbcType=INTEGER},
       begin_period = #{beginPeriod,jdbcType=VARCHAR},
       end_period = #{endPeriod,jdbcType=VARCHAR},
       t_ids = #{tIds,jdbcType=VARCHAR},

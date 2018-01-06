@@ -1,5 +1,6 @@
 package com.example.demo.util.result;
 
+import com.example.demo.model.enums.ResultType;
 import org.apache.ibatis.executor.ErrorContext;
 
 import java.io.Serializable;
@@ -17,12 +18,17 @@ public abstract class Result implements Serializable{
 
     private String errorMessage;
 
+    private Integer code;
+
+    private String description;
+
     public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
+        this.code = ResultType.SUCCESS.getCode();
     }
 
     public ErrorContext getErrorContext() {
