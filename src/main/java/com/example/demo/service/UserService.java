@@ -33,4 +33,17 @@ public interface UserService extends BaseServiceTemplate<User> {
      * @return              用户列表
      */
     List<User> getByIdNumbers(List<String> idNumbers, Integer type);
+
+    /**
+     * 根据type查找（学生，老师）
+     * @param type
+     * @return
+     */
+    List<User> getByType(Integer type);
+
+    /**
+     * 根据idNumber删除User
+     * @param idNumber
+     */
+    void deleteByIdNumber(String idNumber);
 }

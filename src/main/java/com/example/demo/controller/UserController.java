@@ -153,4 +153,38 @@ public class UserController {
         }
         return userIds;
     }
+
+    //获取教师和管理员信息
+    @RequestMapping(value = "getTeachers", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON getUserByType(HttpServletRequest request) {
+        List<User> userList;
+        SingleResult<List<User>> result = new SingleResult<>();
+        try {
+            userList = userServiceImpl.getByType(0);
+            userList.addAll(userServiceImpl.getByType(1));
+        } catch (Exception e) {
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(userList);
+        return (JSON) JSON.toJSON(result);
+    }
+
+    //根据idNumber删除User
+    @RequestMapping(value = "deleteByIdNumber", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSON deleteByIdNumber(@RequestBody User userParam, HttpServletRequest request) {
+        SingleResult<List<User>> result = new SingleResult<>();
+        try {
+            userServiceImpl.deleteByIdNumber(userParam.getIdNumber());
+        } catch (Exception e) {
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(null);
+        return (JSON) JSON.toJSON(result);
+    }
+
+
 }

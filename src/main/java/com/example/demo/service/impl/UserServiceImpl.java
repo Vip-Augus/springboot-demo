@@ -66,4 +66,14 @@ public class UserServiceImpl implements UserService {
     public List<User> getByIdNumbers(List<String> idNumbers, Integer type) {
         return userMapper.selectByIdNumbers(idNumbers, type);
     }
+
+    @Override
+    public List<User> getByType(Integer type) {
+        return userMapper.selectByType(type);
+    }
+
+    @Override
+    public void deleteByIdNumber(String idNumber) {
+        userMapper.deleteByIdNumber(idNumber);
+    }
 }

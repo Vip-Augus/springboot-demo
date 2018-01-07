@@ -1,11 +1,15 @@
 package com.example.demo.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * 用户
  * Author JingQ on 2017/12/24.
  */
+
+@Data
 public class User implements Serializable{
 
     private static final long serialVersionUID = -883785472459846245L;
@@ -33,6 +37,8 @@ public class User implements Serializable{
     private String modifyDate;
 
     private String salt;
+
+    private String authority;
 
     public Integer getId() {
         return id;
@@ -130,6 +136,14 @@ public class User implements Serializable{
         this.salt = salt;
     }
 
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority == null ? null : authority.trim();
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -143,6 +157,7 @@ public class User implements Serializable{
                 ", type=" + type +
                 ", createDate='" + createDate + '\'' +
                 ", modifyDate='" + modifyDate + '\'' +
+                ", authority='" + authority + '\'' +
                 '}';
     }
 }
