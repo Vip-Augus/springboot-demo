@@ -20,6 +20,8 @@ public class CourseReview implements Serializable {
 
     private Integer state;
 
+    private String reason;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -86,6 +88,14 @@ public class CourseReview implements Serializable {
         this.state = state;
     }
 
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason == null ? null : reason.trim();
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -99,13 +109,14 @@ public class CourseReview implements Serializable {
         }
         CourseReview other = (CourseReview) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getBrief() == null ? other.getBrief() == null : this.getBrief().equals(other.getBrief()))
-            && (this.getPeriod() == null ? other.getPeriod() == null : this.getPeriod().equals(other.getPeriod()))
-            && (this.getTest() == null ? other.getTest() == null : this.getTest().equals(other.getTest()))
-            && (this.getCreateId() == null ? other.getCreateId() == null : this.getCreateId().equals(other.getCreateId()))
-            && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
-            && (this.getState() == null ? other.getState() == null : this.getState().equals(other.getState()));
+                && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+                && (this.getBrief() == null ? other.getBrief() == null : this.getBrief().equals(other.getBrief()))
+                && (this.getPeriod() == null ? other.getPeriod() == null : this.getPeriod().equals(other.getPeriod()))
+                && (this.getTest() == null ? other.getTest() == null : this.getTest().equals(other.getTest()))
+                && (this.getCreateId() == null ? other.getCreateId() == null : this.getCreateId().equals(other.getCreateId()))
+                && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
+                && (this.getState() == null ? other.getState() == null : this.getState().equals(other.getState()))
+                && (this.getReason() == null ? other.getReason() == null : this.getReason().equals(other.getReason()));
     }
 
     @Override
@@ -120,6 +131,7 @@ public class CourseReview implements Serializable {
         result = prime * result + ((getCreateId() == null) ? 0 : getCreateId().hashCode());
         result = prime * result + ((getCreateDate() == null) ? 0 : getCreateDate().hashCode());
         result = prime * result + ((getState() == null) ? 0 : getState().hashCode());
+        result = prime * result + ((getReason() == null) ? 0 : getReason().hashCode());
         return result;
     }
 
@@ -137,6 +149,7 @@ public class CourseReview implements Serializable {
         sb.append(", createId=").append(createId);
         sb.append(", createDate=").append(createDate);
         sb.append(", state=").append(state);
+        sb.append(", reason=").append(reason);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -13,6 +13,8 @@ public class ExperimentMessage {
     private int id;
     private int fromId;
     private int toId;
+    private int epId;
+    private String title;
     private String content;
     private Date createdDate;
     private int hasRead;

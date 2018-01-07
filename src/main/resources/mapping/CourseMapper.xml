@@ -125,4 +125,10 @@
       modify_date = #{modifyDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getList" resultType="com.example.demo.model.Course">
+    select
+    <include refid="Base_Column_List" />
+    from course
+  </select>
 </mapper>

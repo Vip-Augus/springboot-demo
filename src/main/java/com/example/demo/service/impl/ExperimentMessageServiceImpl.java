@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by GJW on 2018/1/5.
@@ -64,5 +66,23 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
     public ExperimentMessage add(ExperimentMessage record) {
         messageDAO.insert(record);
         return record;
+    }
+
+    @Override
+    public List<ExperimentMessage> getReceiveList(int toId, int offset, int limit) {
+        List<ExperimentMessage> messages = messageDAO.getReceiveMessageList(toId, offset, limit);
+        if(messages == null) {
+            return Collections.emptyList();
+        }
+        return messages;
+    }
+
+    @Override
+    public List<ExperimentMessage> getSendList(int fromId, int offset, int limit) {
+        List<ExperimentMessage> messages = messageDAO.getSendMessageList(fromId, offset, limit);
+        if(messages == null) {
+            return Collections.emptyList();
+        }
+        return messages;
     }
 }

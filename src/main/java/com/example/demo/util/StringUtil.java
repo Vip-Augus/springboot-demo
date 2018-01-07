@@ -15,4 +15,14 @@ public class StringUtil {
     public static boolean isEquals(String param1, String param2) {
         return param1 == null ? param2 == null : param2.equals(param1);
     }
+
+    public static int getInteger(String s) {
+        int result = 0;
+        try {
+            result = Integer.parseInt(s);
+        } catch (Exception e) {
+            result = 0;
+        }
+        return result;
+    }
 }
