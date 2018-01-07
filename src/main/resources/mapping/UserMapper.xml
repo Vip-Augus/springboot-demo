@@ -1,75 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.example.demo.model.User" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="birthday" property="birthday" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="college_id" property="collegeId" jdbcType="INTEGER" />
-    <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="salt" property="salt" jdbcType="VARCHAR" />
-    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
-    <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, id_number, password, name, phone, birthday, address, college_id, type, salt, create_date, modify_date
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from `user`
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <select id="selectByIdNumber" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    from `user`
-    WHERE id_number = #{idNumber, jdbcType=VARCHAR }
-    AND type = #{type, jdbcType=INTEGER}
-  </select>
-  <select id="selectByIdNumbers" resultMap="BaseResultMap">
-    <if test="idNumbers != null and idNumbers.size() > 0">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM `user`
-    WHERE id_number in
-    <foreach collection="idNumbers" separator="," open="(" index="index" item="idNumber" close=")">
-      #{idNumber}
-    </foreach>
-    and type = #{type, jdbcType=INTEGER}
-    </if>
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from `user`
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.example.demo.model.User" >
-    <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
-      SELECT gen_id('user') as id
-    </selectKey>
-    insert into `user` (id, id_number, name, password,
-      phone, birthday, address,
-      college_id, type, salt, create_date)
-    values (#{id, jdbcType=INTEGER}, #{idNumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
-      #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-      #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{salt, jdbcType=VARCHAR}, sysdate() + '0')
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.User" >
-    update `user`
-    set id_number = #{idNumber,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      password = #{password, jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      birthday = #{birthday,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      college_id = #{collegeId,jdbcType=INTEGER},
-      type = #{type,jdbcType=INTEGER},
-      salt = #{salt, jdbcType=VARCHAR},
-      modify_date = sysdate() + '0'
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+    <resultMap id="BaseResultMap" type="com.example.demo.model.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="college_id" property="collegeId" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="salt" property="salt" jdbcType="VARCHAR" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
+        <result column="authority" jdbcType="CHAR" property="authority" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, id_number, password, name, phone, birthday, address, college_id, type, salt, create_date, modify_date, authority
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from `user`
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByIdNumber" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        from `user`
+        WHERE id_number = #{idNumber, jdbcType=VARCHAR }
+        AND type = #{type, jdbcType=INTEGER}
+    </select>
+    <select id="selectByIdNumbers" resultMap="BaseResultMap">
+        <if test="idNumbers != null and idNumbers.size() > 0">
+            SELECT
+            <include refid="Base_Column_List" />
+            FROM `user`
+            WHERE id_number in
+            <foreach collection="idNumbers" separator="," open="(" index="index" item="idNumber" close=")">
+                #{idNumber}
+            </foreach>
+            and type = #{type, jdbcType=INTEGER}
+        </if>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from `user`
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.example.demo.model.User" >
+        <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+            SELECT gen_id('user') as id
+        </selectKey>
+        insert into `user` (id, id_number, name, password,
+        phone, birthday, address,
+        college_id, type, salt, create_date, authority)
+        values (#{id, jdbcType=INTEGER}, #{idNumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+        #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{salt, jdbcType=VARCHAR}, sysdate() + '0', #{authority, jdbcType=CHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.example.demo.model.User" >
+        update `user`
+        set id_number = #{idNumber,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        password = #{password, jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},
+        birthday = #{birthday,jdbcType=VARCHAR},
+        address = #{address,jdbcType=VARCHAR},
+        college_id = #{collegeId,jdbcType=INTEGER},
+        type = #{type,jdbcType=INTEGER},
+        salt = #{salt, jdbcType=VARCHAR},
+        modify_date = sysdate() + '0',
+        authority = #{authority, jdbcType=CHAR},
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from `user`
+        where type = #{type,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByIdNumber" parameterType="java.lang.String" >
+        delete from `user`
+        where id_number = #{idNumber,jdbcType=VARCHAR}
+    </delete>
 </mapper>

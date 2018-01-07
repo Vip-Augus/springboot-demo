@@ -25,6 +25,8 @@ public class UserDTO implements Serializable{
 
     private Integer type;
 
+    private String authority;
+
     public Integer getId() {
         return id;
     }
@@ -89,6 +91,14 @@ public class UserDTO implements Serializable{
         this.type = type;
     }
 
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -100,6 +110,7 @@ public class UserDTO implements Serializable{
                 ", address='" + address + '\'' +
                 ", collegeId=" + collegeId +
                 ", type=" + type +
+                ", authority='" + authority + '\'' +
                 '}';
     }
 }

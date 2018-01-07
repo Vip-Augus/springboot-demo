@@ -19,4 +19,8 @@ public class CodeConstants {
     public static String USER_INFO_CONSTANT = "user_info";
 
     public static String FAIL_CREATE_EP = "非老师用户无法创建实验课";
+
+    public static String LOGIN_AGAIN = "请重新登录";
+
+    public static String NO_AUTHORITY = "没有权限";
 }
