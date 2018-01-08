@@ -12,6 +12,6 @@ public interface BaseServiceTemplate<T> {
 
     int deleteById(Integer id);
 
-    int insert(T record);
+    T add(T record);
 
 }

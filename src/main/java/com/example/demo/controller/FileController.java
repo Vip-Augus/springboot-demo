@@ -7,7 +7,6 @@ import com.example.demo.util.file.UploadObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +27,6 @@ import java.net.URLEncoder;
  */
 @RestController
 @RequestMapping(value = "/file")
-@SpringBootApplication
 public class FileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
@@ -43,7 +41,6 @@ public class FileController {
 
     @Autowired
     private MinioConfigBean minioConfigBean;
-
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody

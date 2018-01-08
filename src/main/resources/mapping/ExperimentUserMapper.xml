@@ -13,7 +13,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from experiment_user
     where id = #{id,jdbcType=INTEGER}
@@ -32,17 +32,36 @@
   </delete>
 
   <insert id="insert" parameterType="com.example.demo.model.ExperimentUser" >
+      <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
+          SELECT gen_id('experiment_user') as id
+      </selectKey>
     insert into experiment_user (id, ep_id, user_id, 
       create_date)
-    values (gen_id('experiment_user'), #{epId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+    values (#{id, jdbcType=INTEGER}, #{epId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
       sysdate() + '0')
   </insert>
+    <insert id="batchInsert">
+      INSERT INTO experiment_user (id, ep_id, user_id,
+      create_date) VALUES
+      <foreach collection="userIds" index="index" item="userId" separator=",">
+        (gen_id('experiment_user'), #{epId, jdbcType=INTEGER}, #{userId, jdbcType=INTEGER}, sysdate() + '0')
+      </foreach>
+      on DUPLICATE key update
 
-  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentUser" >
+      modify_date = sysdate() + '0'
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentUser" >
     update experiment_user
     set ep_id = #{epId,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       modify_date = sysdate() + '0'
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectUserIdsByEpId" resultType="java.lang.Integer">
+    SELECT user_id
+    FROM experiment_user
+    WHERE ep_id = #{epId}
+  </select>
 </mapper>

@@ -19,4 +19,19 @@ public interface ExperimentUserMapper extends BaseMapperTemplate<ExperimentUser>
      * @return      课程和用户的关系
      */
     List<ExperimentUser> selectByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 批量插入
+     * @param epId      实验课ID
+     * @param userIds   用户ID列表
+     * @return          插入的数量
+     */
+    int batchInsert(@Param("epId") Integer epId, @Param("userIds") List<Integer> userIds);
+
+    /**
+     * 查询选修epId的userId
+     * @param epId
+     * @return
+     */
+    List<Integer> selectUserIdsByEpId(@Param("epId") Integer epId);
 }

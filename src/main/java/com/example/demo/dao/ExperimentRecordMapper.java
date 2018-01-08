@@ -19,4 +19,11 @@ public interface ExperimentRecordMapper extends BaseMapperTemplate<ExperimentRec
      * @return          上课内容列表
      */
     List<ExperimentRecord> selectByEPId(@Param("epId") Integer epId);
+
+    /**
+     * 根据实验室地点查询
+     * @param classroomId   实验室ID
+     * @return              实验课记录
+     */
+    List<ExperimentRecord> selectByClassroomId(@Param("classroomId") Integer classroomId);
 }
