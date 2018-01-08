@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.Interceptor.AuthorityInterceptor;
+import com.example.demo.Interceptor.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -14,7 +14,11 @@ public class ConfigurerAdapter extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/**");
         registry.addInterceptor(new AuthorityInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new Authority1Interceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new Authority2Interceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new Authority3Interceptor()).addPathPatterns("/**");
         super.addInterceptors(registry);
     }
 }

@@ -14,34 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by Administrator on 2018/1/8 0008.
  */
-public class AuthorityInterceptor implements HandlerInterceptor{
-
+public class SessionInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        //System.out.println("URL:" + httpServletRequest.getRequestURL());
-        //System.out.println("URI:" + httpServletRequest.getRequestURI());
         String URI = httpServletRequest.getRequestURI();
-        //System.out.println("URI: " + URI);
         if(URI.equals("/user/login")) {
             return true;
         }
-        if(URI.equals("/user/updateUserAuth")) {
-            User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
-            String authority = user.getAuthority();
-            Integer auth = Integer.valueOf(authority,16);
-            Integer auth1 = 1, in = 0;
-            while((in--)!=0) {
-                auth1 <<= 1;
-            }
-            if((auth & auth1) == 1)return true;
-            else {
-                SingleResult<UserDTO> result = new SingleResult<>();
-                result.returnError(CodeConstants.NO_AUTHORITY);
-                httpServletResponse.setCharacterEncoding("UTF-8");
-                httpServletResponse.getWriter().append(JSON.toJSON(result).toString());
-                httpServletResponse.getWriter().close();
-                return false;
-            }
+        User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
+        if(user == null) {
+            SingleResult<UserDTO> result = new SingleResult<>();
+            result.returnError(CodeConstants.LOGIN_AGAIN);
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.getWriter().append(JSON.toJSON(result).toString());
+            httpServletResponse.getWriter().close();
+            return false;//取消当前请求
         }
         return true;
     }

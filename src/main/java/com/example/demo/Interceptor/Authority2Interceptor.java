@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by Administrator on 2018/1/8 0008.
  */
-public class AuthorityInterceptor implements HandlerInterceptor{
+public class Authority2Interceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
@@ -25,11 +25,11 @@ public class AuthorityInterceptor implements HandlerInterceptor{
         if(URI.equals("/user/login")) {
             return true;
         }
-        if(URI.equals("/user/updateUserAuth")) {
+        if(URI.equals("/")) {
             User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
             String authority = user.getAuthority();
             Integer auth = Integer.valueOf(authority,16);
-            Integer auth1 = 1, in = 0;
+            Integer auth1 = 1, in = 2;
             while((in--)!=0) {
                 auth1 <<= 1;
             }
