@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,5 +88,23 @@ public class NoticeController {
         }
     }
 
+    @RequestMapping(value = "detail")
+    @ResponseBody
+    public JSON getNoticeDetail(@RequestParam("id") Integer id) {
+        SingleResult<Notice> result = new SingleResult<>();
+        try {
+            Notice notice = noticeService.getById(id);
+            if(notice == null) {
+                result.returnError("公告Id错误");
+                return (JSON) JSON.toJSON(result);
+            }
+            result.returnSuccess(notice);
+        } catch (Exception e) {
+            LOGGER.error("获取公告详情失败" + e);
+            result.returnError("获取公告详情失败");
+        } finally {
+            return (JSON) JSON.toJSON(result);
+        }
+    }
 }
 
