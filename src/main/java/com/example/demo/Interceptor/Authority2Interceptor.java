@@ -27,13 +27,11 @@ public class Authority2Interceptor implements HandlerInterceptor{
         }
         if(URI.equals("/")) {
             User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
-            String authority = user.getAuthority();
-            Integer auth = Integer.valueOf(authority,16);
-            Integer auth1 = 1, in = 2;
-            while((in--)!=0) {
-                auth1 <<= 1;
-            }
-            if((auth & auth1) == 1)return true;
+            String auth_str = user.getAuthority();
+            Integer auth_Int = Integer.valueOf(auth_str,16);
+            Integer auth = 1, auth_num = 2;
+            auth <<= auth_num;
+            if((auth_Int & auth) == 1)return true;
             else {
                 SingleResult<UserDTO> result = new SingleResult<>();
                 result.returnError(CodeConstants.NO_AUTHORITY);
