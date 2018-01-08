@@ -37,8 +37,21 @@ public interface UserMapper extends BaseMapperTemplate<User> {
     List<User> selectByType( @Param("type") Integer type);
 
     /**
+     * 查找老师(type = 0 or 1)
+     * @return
+     */
+    List<User> selectTeachers(@Param("offset")int offset, @Param("limit") int limit);
+
+    /**
      * 根据idNumber删除User
      * @param idNumber
      */
-    void deleteByIdNumber(@Param("idNumber") String idNumber);
+    boolean deleteByIdNumber(@Param("idNumber") String idNumber);
+
+    /**
+     * 修改User
+     * @param user
+     * @return
+     */
+    boolean updateUser(User user);
 }

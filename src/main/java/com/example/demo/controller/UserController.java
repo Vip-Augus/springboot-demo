@@ -9,18 +9,14 @@ import com.example.demo.service.UserService;
 import com.example.demo.util.CodeConstants;
 import com.example.demo.util.ImportUtil;
 import com.example.demo.util.SessionUtil;
+import com.example.demo.util.StringUtil;
 import com.example.demo.util.convert.UserConverter;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nullable;
@@ -37,6 +33,7 @@ import java.util.List;
 @RequestMapping(value = "user")
 public class UserController {
 
+    private static final int PAGE_SIZE = 10;
     @Autowired
     private UserService userServiceImpl;
 
@@ -158,11 +155,11 @@ public class UserController {
     @RequestMapping(value = "getTeachers", method = RequestMethod.GET)
     @ResponseBody
     public JSON getUserByType(HttpServletRequest request) {
-        List<User> userList;
+        List<User> userList = Lists.newArrayList();
         SingleResult<List<User>> result = new SingleResult<>();
         try {
-            userList = userServiceImpl.getByType(0);
-            userList.addAll(userServiceImpl.getByType(1));
+            int page = StringUtil.getInteger(request.getParameter("page"));
+            userList = userServiceImpl.getTeachers(page * PAGE_SIZE, PAGE_SIZE);
         } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);
@@ -172,12 +169,16 @@ public class UserController {
     }
 
     //根据idNumber删除User
-    @RequestMapping(value = "deleteByIdNumber", method = RequestMethod.DELETE)
+    @RequestMapping(value = "deleteByIdNumber", method = RequestMethod.POST)
     @ResponseBody
     public JSON deleteByIdNumber(@RequestBody User userParam, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
         try {
-            userServiceImpl.deleteByIdNumber(userParam.getIdNumber());
+            Boolean deleteBoolean = userServiceImpl.deleteByIdNumber(userParam.getIdNumber());
+            if(!deleteBoolean) {
+                result.returnError(CodeConstants.NO_DATA);
+                return (JSON) JSON.toJSON(result);
+            }
         } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);
@@ -186,5 +187,51 @@ public class UserController {
         return (JSON) JSON.toJSON(result);
     }
 
+    //根据idNumber更新UserAuthority
+    @RequestMapping(value = "updateUserAuth", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON updateUserAuth(@RequestBody User user, HttpServletRequest request) {
+        SingleResult<List<User>> result = new SingleResult<>();
+        try {
+            //User user2 = SessionUtil.getUser(request.getSession());
+            String authority = user.getAuthority();
+            Integer auth = Integer.valueOf(authority,16);
+            /*String authNumber = user.getAuthority();
+            Integer authNum = Integer.valueOf(authNumber,16);
+            auth |= authNum;
+            String auth_s = Integer.toHexString(auth).toUpperCase();
+            user.setAuthority(auth_s);*/
+            if((auth & 1) == 1) {
+                user.setType(0);
+            }
+            else {
+                user.setType(1);
+            }
+            Boolean updateBoolean = userServiceImpl.updateUserAuth(user);
+            if(!updateBoolean) {
+                result.returnError("更新失败");
+                return (JSON) JSON.toJSON(result);
+            }
+        } catch (Exception e) {
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(null);
+        return (JSON) JSON.toJSON(result);
+    }
 
+    //密码确认
+    @RequestMapping(value = "passwordConfirm", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON passwordConfirm(@RequestBody User userParam, HttpServletRequest request) {
+        SingleResult<UserDTO> result = new SingleResult<>();
+        User user = userServiceImpl.getByIdNumber(userParam.getIdNumber(), userParam.getType());
+        //校验用户信息
+        if (user == null || !userServiceImpl.checkPassword(userParam, user)) {
+            result.returnError(CodeConstants.INVALID_USER_INFO);
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(null);
+        return (JSON) JSON.toJSON(result);
+    }
 }

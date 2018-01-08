@@ -42,8 +42,21 @@ public interface UserService extends BaseServiceTemplate<User> {
     List<User> getByType(Integer type);
 
     /**
+     * 查找老师(type = 0 or 1)
+     * @return
+     */
+    List<User> getTeachers(int offset, int limit);
+
+    /**
      * 根据idNumber删除User
      * @param idNumber
      */
-    void deleteByIdNumber(String idNumber);
+    boolean deleteByIdNumber(String idNumber);
+
+    /**
+     * 修改User
+     * @param user
+     * @return
+     */
+    boolean updateUserAuth(User user);
 }

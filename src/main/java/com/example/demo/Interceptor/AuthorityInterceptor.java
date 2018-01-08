@@ -31,35 +31,37 @@ public class AuthorityInterceptor implements HandlerInterceptor{
             result.returnError(CodeConstants.LOGIN_AGAIN);
             httpServletResponse.setCharacterEncoding("UTF-8");
             httpServletResponse.getWriter().append(JSON.toJSON(result).toString());
+            httpServletResponse.getWriter().close();
             return false;//取消当前请求
         }
         String authority = user.getAuthority();
-        Integer in = Integer.valueOf(authority,16);
-        String authBinary = Integer.toBinaryString(in);
-        /*switch (URI) {
-            case "/user/login":
-                if(authBinary.charAt(0) == '1')return true;
+        Integer auth = Integer.valueOf(authority,16);
+        switch (URI) {
+            case "/user/updateUserAuth":
+                if((auth & 1) == 1)return true;
                 else {
                     SingleResult<UserDTO> result = new SingleResult<>();
                     result.returnError(CodeConstants.NO_AUTHORITY);
                     httpServletResponse.setCharacterEncoding("UTF-8");
                     httpServletResponse.getWriter().append(JSON.toJSON(result).toString());
+                    httpServletResponse.getWriter().close();
                 }
             default:
-        }*/
+                break;
+        }
         //String idNumber = user.getIdNumber();
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-        User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
+        //User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
         //String idNumber = user.getIdNumber();
         //System.out.println(idNumber);
-        String authority = user.getAuthority();
+        /*String authority = user.getAuthority();
         Integer in = Integer.valueOf(authority,16);
         String stb = Integer.toBinaryString(in);
-        char c = stb.charAt(0);
+        char c = stb.charAt(0);*/
     }
 
     @Override

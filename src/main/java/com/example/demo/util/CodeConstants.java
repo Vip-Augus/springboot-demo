@@ -23,4 +23,6 @@ public class CodeConstants {
     public static String LOGIN_AGAIN = "请重新登录";
 
     public static String NO_AUTHORITY = "没有权限";
+
+    public static String NO_DATA = "删除失败";
 }

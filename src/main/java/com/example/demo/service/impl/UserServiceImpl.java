@@ -8,6 +8,7 @@ import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -73,7 +74,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteByIdNumber(String idNumber) {
-        userMapper.deleteByIdNumber(idNumber);
+    public List<User> getTeachers(int offset, int limit) {
+        List<User> userList = userMapper.selectTeachers(offset, limit);
+        if(userList == null) {
+            return Collections.emptyList();
+        }
+        return userList;
+    }
+
+    @Override
+    public boolean deleteByIdNumber(String idNumber) {
+        boolean b =  userMapper.deleteByIdNumber(idNumber);
+        System.out.println(b);
+        return b;
+    }
+
+    @Override
+    public boolean updateUserAuth(User user) {
+        return userMapper.updateUser(user);
     }
 }

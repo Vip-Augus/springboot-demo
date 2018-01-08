@@ -71,7 +71,7 @@
         type = #{type,jdbcType=INTEGER},
         salt = #{salt, jdbcType=VARCHAR},
         modify_date = sysdate() + '0',
-        authority = #{authority, jdbcType=CHAR},
+        authority = #{authority, jdbcType=CHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -80,8 +80,54 @@
         from `user`
         where type = #{type,jdbcType=INTEGER}
     </select>
+    <select id="selectTeachers" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from `user`
+        where type = 0 or type = 1
+        LIMIT #{offset},#{limit}
+    </select>
     <delete id="deleteByIdNumber" parameterType="java.lang.String" >
         delete from `user`
         where id_number = #{idNumber,jdbcType=VARCHAR}
     </delete>
+    <update id="updateUser" parameterType="com.example.demo.model.User" >
+        update user
+        <set >
+            <if test="password != null" >
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null" >
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null" >
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="collegeId != null" >
+                college_id = #{collegeId,jdbcType=INTEGER},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="salt != null" >
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyDate != null" >
+                modify_date = #{modifyDate,jdbcType=VARCHAR},
+            </if>
+            <if test="authority != null" >
+                authority = #{authority,jdbcType=CHAR},
+            </if>
+        </set>
+        where id_number = #{idNumber,jdbcType=VARCHAR}
+    </update>
 </mapper>
