@@ -47,4 +47,13 @@ public class NoticeServiceImpl implements NoticeService {
         }
         return notices;
     }
+
+    @Override
+    public List<Notice> getMessageList(int offset, int limit) {
+        List<Notice> notices = noticeMapper.getMessageNoticeList(offset, limit);
+        if(CollectionUtils.isEmpty(notices)) {
+            return Collections.emptyList();
+        }
+        return notices;
+    }
 }

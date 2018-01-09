@@ -67,12 +67,13 @@
     LIMIT #{offset},#{limit}
   </select>
 
-  <select id="getSendMessageList" parameterType="java.lang.Integer" resultType="com.example.demo.model.ExperimentMessage">
+  <select id="getSendListGroupByEpId" parameterType="java.lang.Integer" resultType="com.example.demo.model.ExperimentMessage">
     SELECT
     <include refid="selectFields"/>
     FROM
     <include refid="table"/>
     WHERE from_id = #{fromId}
+    GROUP BY ep_id
     ORDER BY created_date DESC
     LIMIT #{offset},#{limit}
   </select>

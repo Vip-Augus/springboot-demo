@@ -24,5 +24,5 @@ public interface ExperimentMessageService extends BaseServiceTemplate<Experiment
 
     List<ExperimentMessage> getReceiveList(int toId, int offset, int limit);
 
-    List<ExperimentMessage> getSendList(int fromId, int offset, int limit);
+    List<ExperimentMessage> getSendListGroupByEpId(int fromId, int offset, int limit);
 }

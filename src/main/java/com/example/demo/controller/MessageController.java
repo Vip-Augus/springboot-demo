@@ -2,17 +2,11 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.model.ExperimentMessage;
-import com.example.demo.model.ExperimentRecord;
-import com.example.demo.model.User;
-import com.example.demo.model.ViewObject;
+import com.example.demo.model.*;
 import com.example.demo.model.dto.MessageListDTO;
 import com.example.demo.model.dto.UserDTO;
 import com.example.demo.model.enums.UserType;
-import com.example.demo.service.ExperimentMessageService;
-import com.example.demo.service.ExperimentService;
-import com.example.demo.service.ExperimentUserService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import com.example.demo.util.CodeConstants;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.StringUtil;
@@ -55,6 +49,9 @@ public class MessageController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    NoticeService noticeService;
+
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     @ResponseBody
     public JSON getConversationDetail(@RequestParam("id") Integer id) {
@@ -75,7 +72,7 @@ public class MessageController {
         }
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "list/student", method = RequestMethod.GET)
     @ResponseBody
     public JSON getConversationList(HttpServletRequest request) {
         ListResult<MessageListDTO> result = new ListResult<>();
@@ -84,17 +81,31 @@ public class MessageController {
             User localUser = SessionUtil.getUser(request.getSession());
             int localUserId = localUser.getId();
             List<ExperimentMessage> messageList = Lists.newArrayList();
-            if(localUser.getType() == UserType.STUDENT.getCode()) {
-                messageList = messageService.getReceiveList(localUserId, page * PAGE_SIZE, 10);
-            }else {
-                //TODO:按epId区分
-                messageList = messageService.getSendList(localUserId, page * PAGE_SIZE, 10);
-            }
+            messageList = messageService.getReceiveList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
             List<MessageListDTO> dtos = getMessageListDTO(messageList, localUser);
             result.returnSuccess(dtos);
         } catch (Exception e) {
             result.returnError("查询消息列表失败");
-            LOGGER.error("/msg/list", e);
+            LOGGER.error("list/student", e);
+            return (JSON) JSON.toJSON(result);
+        }
+        return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "list/teacher", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON getTeacherList(HttpServletRequest request) {
+        ListResult<MessageListDTO> result = new ListResult<>();
+        try {
+            int page = StringUtil.getInteger(request.getParameter("page"));
+            User localUser = SessionUtil.getUser(request.getSession());
+            int localUserId = localUser.getId();
+            List<Notice> notices = noticeService.getMessageList(page * PAGE_SIZE, PAGE_SIZE);
+            List<MessageListDTO> dtos = getMessageListDTOFromNotice(notices);
+            result.returnSuccess(dtos);
+        } catch (Exception e) {
+            result.returnError("查询消息列表失败");
+            LOGGER.error("list/teacher", e);
             return (JSON) JSON.toJSON(result);
         }
         return (JSON) JSON.toJSON(result);
@@ -116,15 +127,38 @@ public class MessageController {
         return dtos;
     }
 
+    private List<MessageListDTO> getMessageListDTOFromNotice(List<Notice> noticeList) {
+        List<MessageListDTO> dtos = Lists.newArrayList();
+        for (Notice notice : noticeList) {
+            MessageListDTO dto = new MessageListDTO();
+            dto.setId(notice.getId());
+            dto.setTitle(notice.getTitle());
+            dto.setContent(notice.getContent());
+            dto.setCreatedDate(notice.getCreateTime());
+            dto.setEqName(experimentService.getById(notice.getEpId()).getName());
+            dto.setSendUserName(userService.getById(notice.getCreateId()).getName());
+            dto.setHasRead(1);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
     @RequestMapping(value = "/send", method = {RequestMethod.POST})
     @ResponseBody
-    public JSON addMessage(@RequestParam("eqId") int eqId,
+    public JSON addMessage(@RequestParam("epId") int epId,
                              @RequestParam("content") String content, HttpServletRequest request) {
         SingleResult<String> result = new SingleResult<>();
         try {
             String title = request.getParameter("title");
             User user = SessionUtil.getUser(request.getSession());
-            List<Integer> studentIds = experimentUserService.getUserIdsByEpId(eqId);
+            Notice notice = new Notice();
+            notice.setTitle(title);
+            notice.setContent(content);
+            notice.setCreateId(user.getId());
+            notice.setEpId(epId);
+            notice.setCreateTime(new Date());
+            noticeService.add(notice);
+            List<Integer> studentIds = experimentUserService.getUserIdsByEpId(epId);
             new Thread() {
                 @Override
                 public void run() {
@@ -132,7 +166,7 @@ public class MessageController {
                         ExperimentMessage message = new ExperimentMessage();
                         message.setFromId(user.getId());
                         message.setToId(user.getId());
-                        message.setEpId(eqId);
+                        message.setEpId(epId);
                         message.setTitle(title);
                         message.setContent(content);
                         message.setCreatedDate(new Date());
