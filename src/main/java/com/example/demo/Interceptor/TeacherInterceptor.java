@@ -1,12 +1,9 @@
 package com.example.demo.Interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.example.demo.model.User;
-import com.example.demo.model.dto.UserDTO;
 import com.example.demo.model.enums.UserType;
-import com.example.demo.util.CodeConstants;
+import com.example.demo.util.AuthUtil;
 import com.example.demo.util.SessionUtil;
-import com.example.demo.util.result.SingleResult;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,6 +21,7 @@ public class TeacherInterceptor implements HandlerInterceptor{
         if(user.getType().equals(UserType.TEACHER.getCode()) || user.getType().equals(UserType.MANAGE.getCode())) {
             return true;
         }
+        AuthUtil.NoAuthorityResponseOut(httpServletResponse, "老师");
         return false;
     }
 

@@ -1,13 +1,9 @@
 package com.example.demo.Interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.example.demo.model.User;
-import com.example.demo.model.dto.UserDTO;
 import com.example.demo.model.enums.AuthorityType;
 import com.example.demo.util.AuthUtil;
-import com.example.demo.util.CodeConstants;
 import com.example.demo.util.SessionUtil;
-import com.example.demo.util.result.SingleResult;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,6 +23,7 @@ public class SendNoticeInterceptor implements HandlerInterceptor{
         if (AuthUtil.checkAuthority(auth, AuthorityType.SEND_NOTICE.getAuthCode())) {
             return true;
         }
+        AuthUtil.NoAuthorityResponseOut(httpServletResponse, AuthorityType.SEND_NOTICE.getDescribe());
         return false;
     }
 
