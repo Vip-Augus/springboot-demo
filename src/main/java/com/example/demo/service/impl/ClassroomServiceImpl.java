@@ -2,8 +2,10 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.ClassroomMapper;
 import com.example.demo.model.Classroom;
+import com.example.demo.model.Experiment;
 import com.example.demo.model.dto.ClassroomQueryParam;
 import com.example.demo.service.ClassroomService;
+import com.example.demo.service.ExperimentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ public class ClassroomServiceImpl implements ClassroomService{
 
     @Autowired
     private ClassroomMapper classroomMapper;
+
+    @Autowired
+    private ExperimentService experimentServiceImpl;
 
     @Override
     public Classroom getById(Integer id) {
@@ -42,5 +47,10 @@ public class ClassroomServiceImpl implements ClassroomService{
     @Override
     public List<Classroom> getList(ClassroomQueryParam queryParam) {
         return classroomMapper.query(queryParam);
+    }
+
+    @Override
+    public List<Experiment> getUsingStatement(Integer cid, String currentTime) {
+        return experimentServiceImpl.getUsingStatementByCID(cid, currentTime);
     }
 }

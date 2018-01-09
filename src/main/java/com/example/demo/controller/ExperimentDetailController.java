@@ -44,7 +44,7 @@ public class ExperimentDetailController {
         String url = null;
         try {
             user = SessionUtil.getUser(request.getSession());
-            url = fileManageServiceImpl.upload(file, BASE_DIR);
+            url = fileManageServiceImpl.upload(file, BASE_DIR+"/"+epRecordId+"/");
         } catch (Exception e) {
             return (JSON) JSON.toJSON(null);
         }

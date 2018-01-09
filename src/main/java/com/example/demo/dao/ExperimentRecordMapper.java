@@ -26,4 +26,11 @@ public interface ExperimentRecordMapper extends BaseMapperTemplate<ExperimentRec
      * @return              实验课记录
      */
     List<ExperimentRecord> selectByClassroomId(@Param("classroomId") Integer classroomId);
+
+    /**
+     * 更新老师上传后的教材文件链接
+     * @param id
+     * @return
+     */
+    int updateEpFileUrl(@Param("id") Integer id, @Param("fileUrl") String fileUrl);
 }

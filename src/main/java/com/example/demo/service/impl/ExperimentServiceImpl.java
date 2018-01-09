@@ -3,9 +3,12 @@ package com.example.demo.service.impl;
 import com.example.demo.dao.ExperimentMapper;
 import com.example.demo.model.Experiment;
 import com.example.demo.service.ExperimentService;
+import com.example.demo.util.PeriodUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,5 +44,10 @@ public class ExperimentServiceImpl implements ExperimentService{
     @Override
     public List<Experiment> getByIds(List<Integer> ids) {
         return experimentMapper.selectByIds(ids);
+    }
+
+    @Override
+    public List<Experiment> getUsingStatementByCID(Integer cid, String currentTime) {
+        return experimentMapper.selectInUseByClassroomId(cid, currentTime);
     }
 }
