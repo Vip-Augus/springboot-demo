@@ -60,7 +60,6 @@ public class MessageController {
     public JSON getConversationDetail(@RequestParam("id") Integer id) {
         SingleResult<ExperimentMessage> result = new SingleResult<>();
         try {
-
             ExperimentMessage message = messageService.getById(id);
             if(message == null) {
                 result.returnError("消息Id错误");
