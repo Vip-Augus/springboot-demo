@@ -29,6 +29,7 @@
         <include refid="Base_Column_List"/>
         FROM experiment_record
         WHERE ep_id = #{epId, jdbcType=INTEGER}
+        ORDER BY create_date desc
     </select>
     <select id="selectByClassroomId" resultMap="BaseResultMap">
         SELECT
@@ -67,5 +68,10 @@
       classroom_id = #{classroomId,jdbcType=INTEGER},
       modify_date = sysdate() + '0'
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateEpFileUrl">
+    update experiment_record
+    set ep_file_url = #{fileUrl, jdbcType=VARCHAR}
+    where id = #{id, jdbcType=INTEGER}
   </update>
 </mapper>

@@ -16,4 +16,13 @@ public interface ExperimentService extends BaseServiceTemplate<Experiment> {
      * @return      实验课程列表
      */
     List<Experiment> getByIds(List<Integer> ids);
+
+    /**
+     * 某间实验室最近上的实验课
+     *
+     * @param cid
+     * @param currentTime
+     * @return
+     */
+    List<Experiment> getUsingStatementByCID(Integer cid, String currentTime);
 }

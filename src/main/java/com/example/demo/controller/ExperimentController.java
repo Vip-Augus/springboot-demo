@@ -71,7 +71,7 @@ public class ExperimentController {
         }
         //插入成功后，将老师id与实验课绑定
         Experiment insertEP = experimentServiceImpl.add(experiment);
-        List<String> tmp = Lists.newArrayList(insertEP.gettIds().split(SPLIT_SIGNAL));
+        List<String> tmp = Lists.newArrayList(insertEP.getTIds().split(SPLIT_SIGNAL));
         if (!CollectionUtils.isEmpty(tmp)) {
             List<Integer> tIDs  = Lists.transform(tmp, new Function<String, Integer>() {
                 @Nullable

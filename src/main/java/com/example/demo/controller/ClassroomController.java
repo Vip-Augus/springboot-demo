@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.Classroom;
+import com.example.demo.model.Experiment;
 import com.example.demo.model.ExperimentRecord;
 import com.example.demo.model.dto.ClassroomQueryParam;
 import com.example.demo.service.ClassroomService;
 import com.example.demo.service.ExperimentRecordService;
+import com.example.demo.util.PeriodUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -26,6 +29,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/classroom")
 public class ClassroomController {
+
+    private static final String TIME_TEMPLATE = "yyyy-MM-dd";
 
     @Autowired
     private ClassroomService classroomServiceImpl;
@@ -77,8 +82,10 @@ public class ClassroomController {
     @RequestMapping(value = "details", method = RequestMethod.GET)
     @ResponseBody
     public JSON queryDetail(@RequestParam("id") Integer id, HttpServletRequest request) {
-        ListResult<ExperimentRecord> result = new ListResult<>();
-        result.returnSuccess(experimentRecordServiceImpl.getListByClassroomId(id));
+        ListResult<Experiment> result = new ListResult<>();
+        SimpleDateFormat sdf = PeriodUtil.getSimpleDateFormat(TIME_TEMPLATE);
+        String currentTime = sdf.format(System.currentTimeMillis());
+        result.returnSuccess(classroomServiceImpl.getUsingStatement(id, currentTime));
         return (JSON) JSON.toJSON(result);
     }
 
