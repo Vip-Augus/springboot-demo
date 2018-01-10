@@ -69,7 +69,7 @@ public class CourseReviewController {
         return (JSON) JSON.toJSON(result);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public JSON addCourseReview(@RequestBody CourseReview courseReview) {
         SingleResult<CourseReview> result = new SingleResult<>();

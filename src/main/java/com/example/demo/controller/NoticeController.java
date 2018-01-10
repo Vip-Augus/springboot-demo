@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -39,7 +36,7 @@ public class NoticeController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "list")
+    @RequestMapping(value = "list", method = {RequestMethod.GET})
     @ResponseBody
     public JSON getNoticeList(HttpServletRequest request) {
         int page = StringUtil.getInteger(request.getParameter("page"));
@@ -74,7 +71,7 @@ public class NoticeController {
         return dtos;
     }
 
-    @RequestMapping(value = "send")
+    @RequestMapping(value = "send", method = {RequestMethod.POST})
     @ResponseBody
     public JSON sendNotice(@RequestBody Notice notice, HttpServletRequest request) {
         SingleResult<Notice> result = new SingleResult<>();
@@ -88,7 +85,7 @@ public class NoticeController {
         }
     }
 
-    @RequestMapping(value = "detail")
+    @RequestMapping(value = "detail", method = {RequestMethod.GET})
     @ResponseBody
     public JSON getNoticeDetail(@RequestParam("id") Integer id) {
         SingleResult<Notice> result = new SingleResult<>();

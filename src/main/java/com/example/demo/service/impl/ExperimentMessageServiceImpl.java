@@ -77,12 +77,5 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
         return messages;
     }
 
-    @Override
-    public List<ExperimentMessage> getSendList(int fromId, int offset, int limit) {
-        List<ExperimentMessage> messages = messageDAO.getSendMessageList(fromId, offset, limit);
-        if(messages == null) {
-            return Collections.emptyList();
-        }
-        return messages;
-    }
+
 }

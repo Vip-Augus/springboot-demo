@@ -23,6 +23,4 @@ public interface ExperimentMessageService extends BaseServiceTemplate<Experiment
     int getUnreadCount(int userId, String conversationId);
 
     List<ExperimentMessage> getReceiveList(int toId, int offset, int limit);
-
-    List<ExperimentMessage> getSendListGroupByEpId(int fromId, int offset, int limit);
 }
