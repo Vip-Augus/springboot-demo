@@ -38,6 +38,9 @@ public class ExperimentServiceImpl implements ExperimentService {
 
     @Override
     public int update(Experiment record) {
+        if (!isValid(record)) {
+            return 0;
+        }
         return experimentMapper.updateByPrimaryKey(record);
     }
 
@@ -53,13 +56,7 @@ public class ExperimentServiceImpl implements ExperimentService {
         if (course == null) {
             return null;
         }
-        ClassTime classTime = ClassTime.fromCode(record.getDay());
-        Classroom classroom = classroomServiceImpl.getById(record.getClassroomId());
-        List<Integer> periodsBegin = classroomServiceImpl.getPeriods(classTime, record.getBeginPeriod(), classroom);
-        List<Integer> periodsEnd = classroomServiceImpl.getPeriods(classTime, record.getEndPeriod(), classroom);
-        //实验室地点被占用了,无法添加该课程
-        if (periodsBegin.contains(record.getClassBegin()) || periodsBegin.contains(record.getClassEnd())
-                || periodsEnd.contains(record.getClassBegin()) || periodsEnd.contains(record.getClassEnd())) {
+        if (!isValid(record)) {
             return null;
         }
         experimentMapper.insert(record);
@@ -74,5 +71,23 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public List<Experiment> getUsingStatementByCID(Integer cid, Integer day, String currentPeriod) {
         return experimentMapper.selectInUseByClassroomId(cid, day, currentPeriod);
+    }
+
+    /**
+     * 校验更新和插入时该实验室是否可用
+     * @param record            实验课信息
+     * @return                  实验室是否可用
+     */
+    private boolean isValid(Experiment record) {
+        ClassTime classTime = ClassTime.fromCode(record.getDay());
+        Classroom classroom = classroomServiceImpl.getById(record.getClassroomId());
+        List<Integer> periodsBegin = classroomServiceImpl.getPeriods(classTime, record.getBeginPeriod(), classroom);
+        List<Integer> periodsEnd = classroomServiceImpl.getPeriods(classTime, record.getEndPeriod(), classroom);
+        //实验室地点被占用了,无法添加该课程
+        if (periodsBegin.contains(record.getClassBegin()) || periodsBegin.contains(record.getClassEnd())
+                || periodsEnd.contains(record.getClassBegin()) || periodsEnd.contains(record.getClassEnd())) {
+            return false;
+        }
+        return true;
     }
 }

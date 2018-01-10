@@ -6,6 +6,8 @@ import com.example.demo.service.ExperimentDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Author JingQ on 2017/12/24.
  */
@@ -34,5 +36,13 @@ public class ExperimentDetailServiceImpl implements ExperimentDetailService {
     public ExperimentDetail add(ExperimentDetail record) {
         experimentDetailMapper.insert(record);
         return record;
+    }
+
+    @Override
+    public List<ExperimentDetail> getDetailsByEPRecordId(Integer epRecordId, Integer userId) {
+        if (userId == null) {
+            return experimentDetailMapper.selectByEPRecordId(epRecordId);
+        }
+        return experimentDetailMapper.selectByEPRecordAndUserId(epRecordId, userId);
     }
 }

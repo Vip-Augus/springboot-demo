@@ -1,41 +1,72 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration  scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>logback</contextName>
-    <property name="log.path" value="/Users/reveal/logs/class" />
+    <property name="log.path" value="/Users/yejingqi/logs/class" />
     <!--输出到控制台-->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-             <level>ERROR</level>
-         </filter>-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] %5p %logger{60}:%L ---- %m%n</pattern>
         </encoder>
     </appender>
 
-    <!--输出到文件-->
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 错误日志 appender -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 按天回滚 daily -->
+            <!-- log.dir 在maven profile里配置 -->
+            <fileNamePattern>${log.path}/business-error/logback-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 日志最大的历史 60天 -->
+            <maxHistory>60</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] %5p %logger{60}:%L ---- %m%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- info日志 appender  -->
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按天回滚 daily -->
+            <fileNamePattern>${log.path}/business-info/logback-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 日志最大的历史 60天 -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] %5p %logger{60}:%L ---- %m%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印错误日志 -->
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
     </appender>
 
     <!-- 最基础的日志输出级别 必须要填 -->
     <root level="info">
         <appender-ref ref="console" />
-        <appender-ref ref="file" />
     </root>
+
+    <!--日志打印的包的范围，及分类日志文件存储 -->
+    <logger name="com.example.demo" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="console"/>
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="INFO" />
+    </logger>
 
     <!-- logback为java中的包 -->
     <logger name="com.example.demo" level="debug" additivity="false">
-        <appender-ref ref="file"/>
         <appender-ref ref="console" />
+        <appender-ref ref="INFO" />
     </logger>
     <!-- SQL语句打印 -->
     <logger name="com.example.demo.dao" level="DEBUG" additivity="false">
         <appender-ref ref="console" />
-        <appender-ref ref="file" />
+        <appender-ref ref="INFO" />
     </logger>
 </configuration>

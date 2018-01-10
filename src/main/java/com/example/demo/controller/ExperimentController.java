@@ -5,6 +5,7 @@ import com.example.demo.model.Experiment;
 import com.example.demo.model.User;
 import com.example.demo.model.dto.ExperimentDTO;
 import com.example.demo.model.enums.UserType;
+import com.example.demo.service.ClassroomService;
 import com.example.demo.service.ExperimentService;
 import com.example.demo.service.ExperimentUserService;
 import com.example.demo.util.CodeConstants;
@@ -14,11 +15,13 @@ import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +33,7 @@ import java.util.List;
  * 实验课程（最外层）
  * Author by JingQ on 2018/1/2
  */
+@Slf4j
 @RestController
 @RequestMapping("/ep")
 public class ExperimentController {
@@ -54,6 +58,12 @@ public class ExperimentController {
     @Autowired
     private ExperimentUserService experimentUserServiceImpl;
 
+    /**
+     * 实验室服务
+     */
+    @Autowired
+    private ClassroomService classroomServiceImpl;
+
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
@@ -63,10 +73,12 @@ public class ExperimentController {
         try {
             user = SessionUtil.getUser(request.getSession());
             if (!UserType.TEACHER.equals(UserType.fromCode(user.getType()))) {
+                log.error(CodeConstants.FAIL_CREATE_EP, user.getIdNumber());
                 result.returnError(CodeConstants.FAIL_CREATE_EP);
                 return (JSON) JSON.toJSON(result);
             }
         } catch (Exception e) {
+            log.error("创建课程失败:", e);
             result.returnError(e.getMessage());
         }
         //插入成功后，将老师id与实验课绑定
@@ -77,7 +89,7 @@ public class ExperimentController {
         }
         List<String> tmp = Lists.newArrayList(insertEP.getTIds().split(SPLIT_SIGNAL));
         if (!CollectionUtils.isEmpty(tmp)) {
-            List<Integer> tIDs  = Lists.transform(tmp, new Function<String, Integer>() {
+            List<Integer> tIDs = Lists.transform(tmp, new Function<String, Integer>() {
                 @Nullable
                 @Override
                 public Integer apply(@Nullable String s) {
@@ -86,6 +98,7 @@ public class ExperimentController {
             });
             experimentUserServiceImpl.batchAdd(insertEP.getId(), tIDs);
         }
+        log.info("实验课创建成功: ", insertEP.getId());
         result.returnSuccess(experiment);
         return (JSON) JSON.toJSON(result);
     }
@@ -97,13 +110,62 @@ public class ExperimentController {
         User user;
         try {
             user = SessionUtil.getUser(request.getSession());
-        }catch (Exception e) {
+        } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);
         }
-        List<Integer> epIds = experimentUserServiceImpl.getEPIDsByUserID(user.getId());
-        List<Experiment> experimentList = experimentServiceImpl.getByIds(epIds);
-        result.returnSuccess(epConverter.epList2DTOList(experimentList));
+        try {
+            List<Integer> epIds = experimentUserServiceImpl.getEPIDsByUserID(user.getId());
+            List<Experiment> experimentList = experimentServiceImpl.getByIds(epIds);
+            result.returnSuccess(epConverter.epList2DTOList(experimentList));
+        } catch (Exception e) {
+            log.error("查询实验课失败: ", e);
+            result.returnError(e.getMessage());
+        }
+        return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON deleteEP(@RequestParam("id") Integer id, HttpServletRequest request) {
+        SingleResult<Integer> result = new SingleResult<>();
+        try {
+            experimentUserServiceImpl.deleteById(id);
+        } catch (Exception e) {
+            log.error("删除实验课失败: ", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(id);
+        return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON updateEP(@RequestBody Experiment experiment, HttpServletRequest request) {
+        SingleResult<Experiment> result = new SingleResult<>();
+        try {
+            if (experimentServiceImpl.update(experiment) == 0) {
+                log.info("实验课信息更新失败: 实验室时间冲突,请重新选择");
+                result.returnError("实验课信息更新失败: 实验室时间冲突,请重新选择");
+            } else {
+                log.info("实验室信息更新成功:", experiment);
+                result.returnSuccess(experiment);
+            }
+        } catch (Exception e) {
+            log.error("实验室信息更新失败:", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "get", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON getRecord(@RequestParam("id") Integer id, HttpServletRequest request) {
+        SingleResult<Experiment> result = new SingleResult<>();
+        Experiment record = experimentServiceImpl.getById(id);
+        result.returnSuccess(record);
         return (JSON) JSON.toJSON(result);
     }
 }

@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.example.demo.model.Experiment;
 import com.example.demo.model.ExperimentRecord;
 import com.example.demo.service.ExperimentRecordService;
 import com.example.demo.service.FileManageService;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +22,11 @@ import javax.servlet.http.HttpServletRequest;
  * 实验课记录控制器
  * Author by JingQ on 2018/1/6
  */
+@Slf4j
 @RestController
 @RequestMapping("/epRecord")
 public class ExperimentRecordController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExperimentRecordController.class);
 
     private static final String BASE_DIR = "record/";
     @Autowired
@@ -47,6 +45,7 @@ public class ExperimentRecordController {
                           HttpServletRequest request) {
         SingleResult<ExperimentRecord> result = new SingleResult<>();
         if (file.isEmpty()) {
+            log.error("未选择材料,发布实验失败: ", epId, epName);
             result.returnError("未选择材料,发布实验失败");
         } else {
             try {
@@ -55,8 +54,9 @@ public class ExperimentRecordController {
                 String url = fileManageServiceImpl.upload(file, filePath.toString());
                 ExperimentRecord record = convertRecord(epName, epId, uploadEndTime, url, classroomId);
                 result.returnSuccess(experimentRecordServiceImpl.add(record));
+                log.info("成功添加实验记录:", record.getId());
             } catch (Exception e) {
-                LOGGER.error("发布实验失败: ", epName, e);
+                log.error("发布实验失败: ", epName, e);
                 result.returnError("发布实验失败");
             }
         }
@@ -70,8 +70,9 @@ public class ExperimentRecordController {
         try {
             experimentRecordServiceImpl.update(record);
             result.returnSuccess(record);
+            log.info("成功修改实验记录: ", record.getId());
         } catch (Exception e) {
-            LOGGER.error("修改实验内容失败:", record.getId(), e);
+            log.error("修改实验内容失败:", record.getId(), e);
             result.returnError("修改实验内容失败");
         }
         return (JSON) JSON.toJSON(result);
@@ -85,7 +86,7 @@ public class ExperimentRecordController {
             ExperimentRecord record = experimentRecordServiceImpl.getById(id);
             result.returnSuccess(record);
         } catch (Exception e) {
-            LOGGER.error("查询实验内容失败:", id, e);
+            log.error("查询实验内容失败:", id, e);
             result.returnError("查询实验内容失败");
         }
         return (JSON) JSON.toJSON(result);
@@ -93,9 +94,16 @@ public class ExperimentRecordController {
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
     @ResponseBody
-    public void deleteRecord(@RequestParam("id") Integer id, HttpServletRequest request) {
-        experimentRecordServiceImpl.deleteById(id);
-    }
+    public JSON deleteRecord(@RequestParam("id") Integer id, HttpServletRequest request) {
+        SingleResult<Integer> result = new SingleResult<>();
+        try {
+            result.returnSuccess(experimentRecordServiceImpl.deleteById(id));
+            log.error("删除实验内容成功:", id);
+        } catch (Exception e) {
+            log.error("删除实验内容失败:", id, e);
+            result.returnError("删除实验内容失败");
+        }
+        return (JSON) JSON.toJSON(result);    }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
@@ -104,7 +112,7 @@ public class ExperimentRecordController {
         try {
             result.returnSuccess(experimentRecordServiceImpl.getListByEPId(epId));
         } catch (Exception e) {
-            LOGGER.error("查询实验内容列表失败:", epId, e);
+            log.error("查询实验内容列表失败:", epId, e);
             result.returnError("查询实验内容列表失败");
         }
         return (JSON) JSON.toJSON(result);

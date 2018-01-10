@@ -14,6 +14,7 @@ import com.example.demo.util.convert.UserConverter;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ import java.util.List;
  * 用户控制器
  * Author by JingQ on 2018/1/1
  */
+@Slf4j
 @RestController
 @RequestMapping(value = "user")
 public class UserController {
@@ -51,6 +53,7 @@ public class UserController {
         //校验用户信息
         if (user == null || !userServiceImpl.checkPassword(userParam, user)) {
             result.returnError(CodeConstants.INVALID_USER_INFO);
+            log.error(CodeConstants.INVALID_USER_INFO, userParam.getIdNumber());
             return (JSON) JSON.toJSON(result);
         }
         HttpSession session = request.getSession();

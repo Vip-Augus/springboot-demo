@@ -10,6 +10,8 @@ import com.example.demo.service.ExperimentRecordService;
 import com.example.demo.util.PeriodUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,8 @@ public class ClassroomController {
 
     private static final String TIME_TEMPLATE = "yyyy-MM-dd";
 
+    private Logger LOGGER = LoggerFactory.getLogger(ClassroomController.class);
+
     @Autowired
     private ClassroomService classroomServiceImpl;
 
@@ -43,7 +47,15 @@ public class ClassroomController {
     @ResponseBody
     public JSON addClassroom(@RequestBody Classroom classroom, HttpServletRequest request) {
         SingleResult<Classroom> result = new SingleResult<>();
-        result.returnSuccess(classroomServiceImpl.add(classroom));
+        try {
+            classroom = classroomServiceImpl.add(classroom);
+            LOGGER.info("成功添加实验室: ", classroom);
+        } catch (Exception e) {
+            LOGGER.error("添加实验室失败: ", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(classroom);
         return (JSON) JSON.toJSON(result);
     }
 
@@ -51,7 +63,14 @@ public class ClassroomController {
     @ResponseBody
     public JSON updateClassroom(@RequestBody Classroom classroom, HttpServletRequest request) {
         SingleResult<Classroom> result = new SingleResult<>();
-        classroomServiceImpl.update(classroom);
+        try {
+            classroomServiceImpl.update(classroom);
+            LOGGER.info("实验室信息更新成功:", classroom);
+        } catch (Exception e) {
+            LOGGER.error("实验室信息更新失败:", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
         result.returnSuccess(classroom);
         return (JSON) JSON.toJSON(result);
     }
@@ -60,22 +79,44 @@ public class ClassroomController {
     @ResponseBody
     public JSON getClassroom(@RequestParam("id") Integer id, HttpServletRequest request) {
         SingleResult<Classroom> result = new SingleResult<>();
-        Classroom classroom = classroomServiceImpl.getById(id);
+        Classroom classroom;
+        try {
+            classroom = classroomServiceImpl.getById(id);
+        } catch (Exception e) {
+            LOGGER.error("查询实验室失败: ", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
         result.returnSuccess(classroom);
         return (JSON) JSON.toJSON(result);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.GET)
     @ResponseBody
-    public void deleteClassroom(@RequestParam("id") Integer id, HttpServletRequest request) {
-        classroomServiceImpl.deleteById(id);
+    public JSON deleteClassroom(@RequestParam("id") Integer id, HttpServletRequest request) {
+        SingleResult<Integer> result = new SingleResult<>();
+        try {
+            classroomServiceImpl.deleteById(id);
+        } catch (Exception e) {
+            LOGGER.error("删除实验室失败: ", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        result.returnSuccess(id);
+        return (JSON) JSON.toJSON(result);
     }
 
     @RequestMapping(value = "query", method = RequestMethod.POST)
     @ResponseBody
     public JSON query(@RequestBody ClassroomQueryParam queryParam, HttpServletRequest request) {
         ListResult<Classroom> result = new ListResult<>();
-        result.returnSuccess(classroomServiceImpl.getList(queryParam));
+        try {
+            result.returnSuccess(classroomServiceImpl.getList(queryParam));
+        } catch (Exception e) {
+            LOGGER.error("根据条件查询失败:", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
         return (JSON) JSON.toJSON(result);
     }
 
@@ -83,9 +124,15 @@ public class ClassroomController {
     @ResponseBody
     public JSON queryDetail(@RequestParam("id") Integer id, HttpServletRequest request) {
         ListResult<Experiment> result = new ListResult<>();
-        SimpleDateFormat sdf = PeriodUtil.getSimpleDateFormat(TIME_TEMPLATE);
-        String currentTime = sdf.format(System.currentTimeMillis());
-        result.returnSuccess(classroomServiceImpl.getUsingStatement(id, currentTime));
+        try {
+            SimpleDateFormat sdf = PeriodUtil.getSimpleDateFormat(TIME_TEMPLATE);
+            String currentTime = sdf.format(System.currentTimeMillis());
+            result.returnSuccess(classroomServiceImpl.getUsingStatement(id, currentTime));
+        } catch (Exception e) {
+            LOGGER.error("查询最近上的实验课失败:", e);
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
         return (JSON) JSON.toJSON(result);
     }
 
