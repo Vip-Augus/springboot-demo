@@ -4,6 +4,7 @@ import com.example.demo.base.BaseServiceTemplate;
 import com.example.demo.model.Classroom;
 import com.example.demo.model.Experiment;
 import com.example.demo.model.dto.ClassroomQueryParam;
+import com.example.demo.model.enums.ClassTime;
 
 import java.util.List;
 
@@ -28,5 +29,14 @@ public interface ClassroomService extends BaseServiceTemplate<Classroom>{
      * @return
      */
     List<Experiment> getUsingStatement(Integer cid, String currentTime);
+
+    /**
+     * 某一间教室某天上的课时
+     * @param classTime     周几
+     * @param currentPeriod 某个时间点(yyyy-MM-dd)
+     * @param classroom     实验室信息
+     * @return
+     */
+    List<Integer> getPeriods(ClassTime classTime, String currentPeriod, Classroom classroom);
 
 }

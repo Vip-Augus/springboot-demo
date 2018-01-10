@@ -25,4 +25,6 @@ public class CodeConstants {
     public static String NO_AUTHORITY = "没有权限";
 
     public static String NO_DATA = "删除失败";
+
+    public static String CLASS_TIME_CONFLICT = "该实验室当天时间上课时间冲突了，请重新确认";
 }

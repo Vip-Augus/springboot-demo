@@ -43,10 +43,16 @@
     <include refid="Base_Column_List" />
     FROM experiment
     WHERE classroom_id = #{classroomId, jdbcType=INTEGER}
-    AND
-    <![CDATA[
+    <if test="currentTime != null">
+      AND
+      <![CDATA[
     (begin_period <= #{currentTime} AND end_period >= #{currentTime})
     ]]>
+    </if>
+    <if test="day != null">
+      AND
+      day = #{day, jdbcType=INTEGER}
+    </if>
     ORDER BY day, class_begin
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

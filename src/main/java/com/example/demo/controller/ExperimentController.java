@@ -71,6 +71,10 @@ public class ExperimentController {
         }
         //插入成功后，将老师id与实验课绑定
         Experiment insertEP = experimentServiceImpl.add(experiment);
+        if (insertEP == null) {
+            result.returnError(CodeConstants.CLASS_TIME_CONFLICT);
+            return (JSON) JSON.toJSON(result);
+        }
         List<String> tmp = Lists.newArrayList(insertEP.getTIds().split(SPLIT_SIGNAL));
         if (!CollectionUtils.isEmpty(tmp)) {
             List<Integer> tIDs  = Lists.transform(tmp, new Function<String, Integer>() {
