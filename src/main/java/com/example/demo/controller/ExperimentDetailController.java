@@ -2,25 +2,21 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.ExperimentDetail;
+import com.example.demo.model.Score;
 import com.example.demo.model.User;
 import com.example.demo.model.enums.UserType;
 import com.example.demo.service.ExperimentDetailService;
 import com.example.demo.service.FileManageService;
+import com.example.demo.service.ScoreService;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedInputStream;
 
 /**
  * 实验课作业记录
@@ -39,6 +35,9 @@ public class ExperimentDetailController {
     @Autowired
     private ExperimentDetailService experimentDetailServiceImpl;
 
+    @Autowired
+    private ScoreService scoreServiceImpl;
+
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
     public JSON addRecord(@RequestParam("epId") Integer epId, @RequestParam("epRecordId") Integer epRecordId, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
@@ -53,10 +52,35 @@ public class ExperimentDetailController {
             return (JSON) JSON.toJSON(e.getMessage());
         }
         ExperimentDetail record = convertDetail(epId, epRecordId, user.getId(), url, file.getOriginalFilename());
+        insertScore(epRecordId, user.getId());
         result.returnSuccess(experimentDetailServiceImpl.add(record));
         log.info("上传成功: epDetailId:", record.getId());
         return (JSON) JSON.toJSON(result);
     }
+
+    /**
+     * 测试添加Score
+     * @param record
+     * @param request
+     * @return
+     */
+    /*@RequestMapping(value = "addScore", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON addScore(@RequestParam("epRecordId") Integer epRecordId, HttpServletRequest request) {
+        SingleResult<ExperimentDetail> result = new SingleResult<>();
+        User user;
+        String url = null;
+        try {
+            user = SessionUtil.getUser(request.getSession());
+            insertScore(epRecordId, user.getId());
+        } catch (Exception e) {
+            log.error("上传失败: ", e);
+            return (JSON) JSON.toJSON(e.getMessage());
+        }
+        result.returnSuccess(null);
+        //log.info("上传成功: epDetailId:", record.getId());
+        return (JSON) JSON.toJSON(result);
+    }*/
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
@@ -126,4 +150,10 @@ public class ExperimentDetailController {
         return detail;
     }
 
+    private void insertScore(Integer epRecordId, Integer stuId) {
+        Score score = new Score();
+        score.setEprecordId(epRecordId);
+        score.setStudentId(stuId);
+        scoreServiceImpl.add(score);
+    }
 }

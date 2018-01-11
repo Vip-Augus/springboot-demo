@@ -155,7 +155,7 @@ public class UserController {
     }
 
     //获取教师和管理员信息
-    @RequestMapping(value = "getTeachers", method = RequestMethod.GET)
+    @RequestMapping(value = "teacher", method = RequestMethod.GET)
     @ResponseBody
     public JSON getUserByType(HttpServletRequest request) {
         List<User> userList = Lists.newArrayList();
@@ -172,7 +172,7 @@ public class UserController {
     }
 
     //根据idNumber删除User
-    @RequestMapping(value = "deleteByIdNumber", method = RequestMethod.POST)
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
     @ResponseBody
     public JSON deleteByIdNumber(@RequestBody User userParam, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
@@ -191,7 +191,7 @@ public class UserController {
     }
 
     //根据idNumber更新UserAuthority
-    @RequestMapping(value = "updateUserAuth", method = RequestMethod.POST)
+    @RequestMapping(value = "auth", method = RequestMethod.POST)
     @ResponseBody
     public JSON updateUserAuth(@RequestBody User user, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
@@ -224,7 +224,7 @@ public class UserController {
     }
 
     //密码确认
-    @RequestMapping(value = "passwordConfirm", method = RequestMethod.POST)
+    @RequestMapping(value = "password", method = RequestMethod.POST)
     @ResponseBody
     public JSON passwordConfirm(@RequestBody User userParam, HttpServletRequest request) {
         SingleResult<UserDTO> result = new SingleResult<>();

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.ScoreMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Score" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="eprecord_id" property="eprecordId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="submit" property="submit" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, eprecord_id, teacher_id, student_id, score, comment, create_date, modify_date,
+    submit
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from score
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from score
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Score" >
+    insert into score (id, eprecord_id,
+      student_id, create_date
+      )
+    values (#{id,jdbcType=INTEGER}, #{eprecordId,jdbcType=INTEGER},
+      #{studentId,jdbcType=INTEGER}, sysdate() + '0'
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.Score" >
+    insert into score
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="eprecordId != null" >
+        eprecord_id,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="modifyDate != null" >
+        modify_date,
+      </if>
+      <if test="submit != null" >
+        submit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="eprecordId != null" >
+        #{eprecordId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submit != null" >
+        #{submit,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Score" >
+    update score
+    <set >
+      <if test="eprecordId != null" >
+        eprecord_id = #{eprecordId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submit != null" >
+        submit = #{submit,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Score" >
+    update score
+    set eprecord_id = #{eprecordId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      student_id = #{studentId,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      comment = #{comment,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      submit = #{submit,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByEpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from score
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER}
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectByEpIdNoLim" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from score
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER}
+    </select>
+    <select id="selectByEpIdAndStuId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from score
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER} AND student_id = #{studentId,jdbcType=INTEGER}
+    </select>
+    <select id="selectCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select
+        COUNT(*)
+        from score
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER}
+    </select>
+    <update id="updateByEprecordIdAndStuId" parameterType="com.example.demo.model.Score" >
+        update score
+        <set > teacher_id = #{teacherId,jdbcType=INTEGER},
+            score = #{score,jdbcType=INTEGER},
+            comment = #{comment,jdbcType=VARCHAR},
+            modify_date = sysdate() + '0',
+            <if test="submit != null" >
+                submit = #{submit,jdbcType=INTEGER},
+            </if>
+        </set>
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER} AND student_id = #{studentId,jdbcType=INTEGER}
+    </update>
+</mapper>
