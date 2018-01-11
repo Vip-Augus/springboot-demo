@@ -8,12 +8,11 @@ import com.example.demo.model.enums.ClassTime;
 import com.example.demo.service.ClassroomService;
 import com.example.demo.service.CourseService;
 import com.example.demo.service.ExperimentService;
-import com.example.demo.util.PeriodUtil;
+import com.example.demo.util.result.BusinessException;
+import com.example.demo.util.result.ExceptionDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,10 +53,10 @@ public class ExperimentServiceImpl implements ExperimentService {
         Course course = courseServiceImpl.getById(record.getCourseId());
         //没有这门课---异常抛出后续再加
         if (course == null) {
-            return null;
+            throw new BusinessException(new ExceptionDefinition("0000111", "没有这门课"));
         }
         if (!isValid(record)) {
-            return null;
+            throw new BusinessException(new ExceptionDefinition("0001111", "实验室地点被占用了,无法添加该课程"));
         }
         experimentMapper.insert(record);
         return record;
