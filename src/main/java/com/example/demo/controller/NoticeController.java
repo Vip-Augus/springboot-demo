@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.Notice;
+import com.example.demo.model.User;
 import com.example.demo.model.dto.NoticeDTO;
 import com.example.demo.service.NoticeService;
 import com.example.demo.service.UserService;
+import com.example.demo.util.SessionUtil;
 import com.example.demo.util.StringUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.Result;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,11 +76,20 @@ public class NoticeController {
 
     @RequestMapping(value = "send", method = {RequestMethod.POST})
     @ResponseBody
-    public JSON sendNotice(@RequestBody Notice notice, HttpServletRequest request) {
+    public JSON sendNotice(@RequestParam("content") String content, HttpServletRequest request) {
         SingleResult<Notice> result = new SingleResult<>();
         try {
+            String title = request.getParameter("title");
+            User user = SessionUtil.getUser(request.getSession());
+            Notice notice = new Notice();
+            notice.setTitle(title);
+            notice.setContent(content);
+            notice.setCreateId(user.getId());
+            notice.setEpId(0);
+            notice.setCreateTime(new Date());
             noticeService.add(notice);
-        } catch (Exception e) {
+            result.returnSuccess(notice);
+        }catch (Exception e) {
             LOGGER.error("发布公告失败" + e);
             result.returnError("发布公告失败");
         } finally {

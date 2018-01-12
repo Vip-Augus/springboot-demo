@@ -77,5 +77,11 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
         return messages;
     }
 
-
+    @Override
+    public void updateMessage(int id, int hasRead) {
+        if(id <= 0 ||(hasRead != 0 && hasRead != 1)) {
+            return;
+        }
+        messageDAO.updateStatus(id, hasRead);
+    }
 }

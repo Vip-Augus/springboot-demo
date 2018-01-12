@@ -11,5 +11,5 @@ import java.util.List;
 public interface NoticeService  extends BaseServiceTemplate<Notice> {
     List<Notice> getList(int offset, int limit);
 
-    List<Notice> getMessageList(int offset, int limit);
+    List<Notice> getMessageList(int userId, int offset, int limit);
 }

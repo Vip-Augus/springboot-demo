@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import com.example.demo.model.Notice;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ public interface NoticeMapper {
 
     int updateByPrimaryKey(Notice record);
 
-    List<Notice> getNoticeList(int offset, int limit);
+    List<Notice> getNoticeList(@Param("offset")int offset,@Param("limit") int limit);
 
-    List<Notice> getMessageNoticeList(int offset, int limit);
+    List<Notice> getMessageNoticeList(@Param("userId") int userId, @Param("offset")int offset,@Param("limit") int limit);
 
 }

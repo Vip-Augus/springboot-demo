@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.dao.ExperimentMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.example.demo.model.ExperimentMessage">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="to_id" property="toId" jdbcType="INTEGER"/>
+    <result column="from_id" property="fromId" jdbcType="INTEGER"/>
+    <result column="ep_id" property="epId" jdbcType="INTEGER"/>
+    <result column="title" property="title" jdbcType="VARCHAR"/>
+    <result column="content" property="content" jdbcType="VARCHAR"/>
+    <result column="created_date" property="createdDate" jdbcType="INTEGER"/>
+    <result column="has_read" property="hasRead" jdbcType="INTEGER"/>
+    <result column="conversation_id" property="conversationId" jdbcType="VARCHAR"/>
+  </resultMap>
   <sql id="table">message</sql>
   <sql id="selectFields">id, from_id, to_id,ep_id, title,content,created_date,has_read, conversation_id
   </sql>
@@ -20,7 +31,7 @@
     message
     (<include refid="insertFields"/>)
     VALUES
-    (#{fromId},#{toId},#{content},#{hasRead},#{createdDate},#{conversationId})
+    (#{fromId},#{toId},#{epId},#{title},#{content},#{hasRead},#{createdDate},#{conversationId})
   </insert>
 
   <select id="getConversitionList" parameterType="java.lang.Integer" resultType="com.example.demo.model.ExperimentMessage">
@@ -57,7 +68,7 @@
     SET status = #{status} where id = #{id}
   </update>
 
-  <select id="getReceiveMessageList" parameterType="java.lang.Integer" resultType="com.example.demo.model.ExperimentMessage">
+  <select id="getReceiveMessageList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
     <include refid="selectFields"/>
     FROM

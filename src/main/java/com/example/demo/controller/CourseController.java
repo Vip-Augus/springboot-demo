@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.Course;
+import com.example.demo.model.User;
 import com.example.demo.service.CourseService;
+import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.collect.Lists;
@@ -11,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +63,7 @@ public class CourseController {
     public JSON updateCourseDetail(@RequestBody Course course) {
         SingleResult<Course> result = new SingleResult<>();
         try {
+            course.setModifyDate(new Date());
             courseService.update(course);
             result.returnSuccess(course);
         }catch (Exception e) {
@@ -70,9 +75,14 @@ public class CourseController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public JSON addCourseDetail(@RequestBody Course course) {
+    public JSON addCourseDetail(@RequestBody Course course, HttpServletRequest request) {
         SingleResult<Course> result = new SingleResult<>();
         try {
+            User user = SessionUtil.getUser(request.getSession());
+            course.setCreateId(user.getId());
+            course.setCreateDate(new Date());
+            course.setModifyDate(new Date());
+
             courseService.add(course);
             result.returnSuccess(course);
         }catch (Exception e) {

@@ -3,9 +3,11 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.Course;
 import com.example.demo.model.CourseReview;
+import com.example.demo.model.User;
 import com.example.demo.model.enums.ReviewType;
 import com.example.demo.service.CourseReviewService;
 import com.example.demo.service.CourseService;
+import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.Result;
 import com.example.demo.util.result.SingleResult;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -71,9 +74,13 @@ public class CourseReviewController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public JSON addCourseReview(@RequestBody CourseReview courseReview) {
+    public JSON addCourseReview(@RequestBody CourseReview courseReview, HttpServletRequest request) {
         SingleResult<CourseReview> result = new SingleResult<>();
         try {
+            User user = SessionUtil.getUser(request.getSession());
+            courseReview.setCreateId(user.getId());
+            courseReview.setCreateDate(new Date());
+            courseReview.setState(0);
             CourseReview review = courseReviewService.add(courseReview);
             result.returnSuccess(review);
         }catch (Exception e) {

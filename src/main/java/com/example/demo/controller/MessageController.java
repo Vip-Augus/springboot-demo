@@ -14,6 +14,7 @@ import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.Result;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.collect.Lists;
+import com.sun.tools.corba.se.idl.constExpr.Not;
 import org.omg.CORBA.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,18 @@ public class MessageController {
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     @ResponseBody
-    public JSON getConversationDetail(@RequestParam("id") Integer id) {
+    public JSON getConversationDetail(@RequestParam("id") Integer id, HttpServletRequest request) {
         SingleResult<ExperimentMessage> result = new SingleResult<>();
         try {
-            ExperimentMessage message = messageService.getById(id);
+            User user = SessionUtil.getUser(request.getSession());
+            ExperimentMessage message;
+            if(user.getType().equals( UserType.STUDENT)) {
+                message = messageService.getById(id);
+                messageService.updateMessage(message.getId(), 1);
+            } else {
+                Notice notice = noticeService.getById(id);
+                message = changeNoticeToMessage(notice);
+            }
             if(message == null) {
                 result.returnError("消息Id错误");
                 return (JSON) JSON.toJSON(result);
@@ -72,27 +81,16 @@ public class MessageController {
         }
     }
 
-    @RequestMapping(value = "list/student", method = RequestMethod.GET)
-    @ResponseBody
-    public JSON getConversationList(HttpServletRequest request) {
-        ListResult<MessageListDTO> result = new ListResult<>();
-        try {
-            int page = StringUtil.getInteger(request.getParameter("page"));
-            User localUser = SessionUtil.getUser(request.getSession());
-            int localUserId = localUser.getId();
-            List<ExperimentMessage> messageList = Lists.newArrayList();
-            messageList = messageService.getReceiveList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
-            List<MessageListDTO> dtos = getMessageListDTO(messageList, localUser);
-            result.returnSuccess(dtos);
-        } catch (Exception e) {
-            result.returnError("查询消息列表失败");
-            LOGGER.error("list/student", e);
-            return (JSON) JSON.toJSON(result);
-        }
-        return (JSON) JSON.toJSON(result);
+    private ExperimentMessage changeNoticeToMessage(Notice notice) {
+        ExperimentMessage message = new ExperimentMessage();
+        message.setHasRead(1);
+        message.setContent(notice.getContent());
+        message.setTitle(notice.getTitle());
+        message.setCreatedDate(notice.getCreateTime());
+        return message;
     }
 
-    @RequestMapping(value = "list/teacher", method = RequestMethod.GET)
+    @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public JSON getTeacherList(HttpServletRequest request) {
         ListResult<MessageListDTO> result = new ListResult<>();
@@ -100,12 +98,19 @@ public class MessageController {
             int page = StringUtil.getInteger(request.getParameter("page"));
             User localUser = SessionUtil.getUser(request.getSession());
             int localUserId = localUser.getId();
-            List<Notice> notices = noticeService.getMessageList(page * PAGE_SIZE, PAGE_SIZE);
-            List<MessageListDTO> dtos = getMessageListDTOFromNotice(notices);
+            List<MessageListDTO> dtos;
+            if(localUser.getType().equals(UserType.STUDENT.getCode())) {
+                List<ExperimentMessage> messageList;// = Lists.newArrayList();
+                messageList = messageService.getReceiveList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
+                dtos = getMessageListDTO(messageList, localUser);
+            } else {
+                List<Notice> notices = noticeService.getMessageList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
+                dtos = getMessageListDTOFromNotice(notices);
+            }
             result.returnSuccess(dtos);
         } catch (Exception e) {
             result.returnError("查询消息列表失败");
-            LOGGER.error("list/teacher", e);
+            LOGGER.error("list", e);
             return (JSON) JSON.toJSON(result);
         }
         return (JSON) JSON.toJSON(result);
@@ -165,10 +170,11 @@ public class MessageController {
                     for(Integer id : studentIds) {
                         ExperimentMessage message = new ExperimentMessage();
                         message.setFromId(user.getId());
-                        message.setToId(user.getId());
+                        message.setToId(id);
                         message.setEpId(epId);
                         message.setTitle(title);
                         message.setContent(content);
+                        message.setHasRead(0);
                         message.setCreatedDate(new Date());
                         message.setConversationId(message.getConversationId());
                         messageService.addMessage(message);

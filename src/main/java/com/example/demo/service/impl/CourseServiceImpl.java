@@ -33,7 +33,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course add(Course record) {
-        courseMapper.insert(record);
+        courseMapper.insertSelective(record);
         return record;
     }
 
