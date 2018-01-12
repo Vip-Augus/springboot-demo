@@ -96,7 +96,7 @@ public class ExperimentDetailController {
         return (JSON) JSON.toJSON(result);
     }
 
-    @RequestMapping(value = "get", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public JSON getRecord(@RequestParam("id") Integer id, HttpServletRequest request) {
         SingleResult<ExperimentDetail> result = new SingleResult<>();

@@ -145,13 +145,9 @@ public class ExperimentController {
     public JSON updateEP(@RequestBody Experiment experiment, HttpServletRequest request) {
         SingleResult<Experiment> result = new SingleResult<>();
         try {
-            if (experimentServiceImpl.update(experiment) == 0) {
-                log.info("实验课信息更新失败: 实验室时间冲突,请重新选择");
-                result.returnError("实验课信息更新失败: 实验室时间冲突,请重新选择");
-            } else {
-                log.info("实验室信息更新成功:", experiment);
-                result.returnSuccess(experiment);
-            }
+            experimentServiceImpl.update(experiment);
+            log.info("实验室信息更新成功:", experiment);
+            result.returnSuccess(experiment);
         } catch (Exception e) {
             log.error("实验室信息更新失败:", e);
             result.returnError(e.getMessage());
@@ -160,7 +156,7 @@ public class ExperimentController {
         return (JSON) JSON.toJSON(result);
     }
 
-    @RequestMapping(value = "get", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public JSON getRecord(@RequestParam("id") Integer id, HttpServletRequest request) {
         SingleResult<Experiment> result = new SingleResult<>();

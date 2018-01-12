@@ -44,7 +44,7 @@ public class PeriodUtil {
 
     public static List<Integer> getSectionClass(int classBegin, int classEnd) {
         List<Integer> result = Lists.newArrayList();
-        for (int i = classBegin; i <= classBegin; i++) {
+        for (int i = classBegin; i <= classEnd; i++) {
             result.add(i);
         }
         return result;
