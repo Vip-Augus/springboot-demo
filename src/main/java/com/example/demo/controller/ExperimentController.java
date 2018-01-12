@@ -69,18 +69,6 @@ public class ExperimentController {
     @ResponseBody
     public JSON add(@RequestBody Experiment experiment, HttpServletRequest request) {
         SingleResult<Experiment> result = new SingleResult<>();
-        User user = null;
-        try {
-            user = SessionUtil.getUser(request.getSession());
-            if (!UserType.TEACHER.equals(UserType.fromCode(user.getType()))) {
-                log.error(CodeConstants.FAIL_CREATE_EP, user.getIdNumber());
-                result.returnError(CodeConstants.FAIL_CREATE_EP);
-                return (JSON) JSON.toJSON(result);
-            }
-        } catch (Exception e) {
-            log.error("创建课程失败:", e);
-            result.returnError(e.getMessage());
-        }
         //插入成功后，将老师id与实验课绑定
         Experiment insertEP = experimentServiceImpl.add(experiment);
         if (insertEP == null) {
