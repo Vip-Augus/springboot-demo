@@ -29,4 +29,6 @@ public interface ScoreMapper {
     Integer selectCount(@Param("eprecordId") Integer eprecordId);
 
     int updateByEprecordIdAndStuId(Score record);
+
+    List<Score> selectByEpIdNoMark(@Param("eprecordId") Integer eprecordId, @Param("limit") int limit);
 }

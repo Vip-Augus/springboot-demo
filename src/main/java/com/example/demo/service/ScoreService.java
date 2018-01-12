@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.base.BaseServiceTemplate;
 import com.example.demo.model.Score;
+import com.example.demo.model.dto.ScoreDTO;
 
 import java.util.List;
 
@@ -39,4 +40,12 @@ public interface ScoreService extends BaseServiceTemplate<Score> {
      * @return
      */
     int getCount(Integer eprecordId);
+
+    /**
+     * 根据老师ID和条数查待批阅报告
+     * @param teacherId
+     * @param limit
+     * @return
+     */
+    List<ScoreDTO> getByTeacherId(Integer teacherId, Integer limit);
 }
