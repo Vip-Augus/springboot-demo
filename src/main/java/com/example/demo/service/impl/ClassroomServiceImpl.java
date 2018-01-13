@@ -52,13 +52,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 
     @Override
     public List<Classroom> getList(ClassroomQueryParam queryParam) {
-        Calendar calendar = Calendar.getInstance();
-        //当前是周几
-        int day = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        SimpleDateFormat sdf1 = PeriodUtil.getSimpleDateFormat("HH:mm");
-        SimpleDateFormat sdf2 = PeriodUtil.getSimpleDateFormat("yyyy-MM-dd");
-        String classTimeFormat = sdf1.format(calendar.getTime());
-        String currentPeriod = sdf2.format(calendar.getTime());
+        long currentTime = System.currentTimeMillis();
+        String classTimeFormat = PeriodUtil.format(currentTime, "HH:mm");
+        String currentPeriod = PeriodUtil.format(currentTime, "yyyy-MM-dd");
         //现在上的是第几节课
         ClassTime classTime = ClassTime.fromTime(classTimeFormat);
         List<Classroom> classrooms = classroomMapper.query(queryParam);

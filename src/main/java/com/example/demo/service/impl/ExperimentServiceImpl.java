@@ -90,12 +90,14 @@ public class ExperimentServiceImpl implements ExperimentService {
         Classroom classroom = classroomServiceImpl.getById(record.getClassroomId());
         List<Integer> periodsBegin = classroomServiceImpl.getPeriods(classTime, record.getBeginPeriod(), classroom);
         List<Integer> periodsEnd = classroomServiceImpl.getPeriods(classTime, record.getEndPeriod(), classroom);
-        List<Integer> periodsOld = PeriodUtil.getSectionClass(oldExperiment.getClassBegin(), oldExperiment.getClassEnd());
-        if (periodsBegin.containsAll(periodsOld)) {
-            periodsBegin.removeAll(periodsOld);
-        }
-        if (periodsEnd.containsAll(periodsOld)) {
-            periodsEnd.removeAll(periodsOld);
+        if (oldExperiment != null) {
+            List<Integer> periodsOld = PeriodUtil.getSectionClass(oldExperiment.getClassBegin(), oldExperiment.getClassEnd());
+            if (periodsBegin.containsAll(periodsOld)) {
+                periodsBegin.removeAll(periodsOld);
+            }
+            if (periodsEnd.containsAll(periodsOld)) {
+                periodsEnd.removeAll(periodsOld);
+            }
         }
         //实验室地点被占用了,无法添加该课程
         if (periodsBegin.contains(record.getClassBegin()) || periodsBegin.contains(record.getClassEnd())

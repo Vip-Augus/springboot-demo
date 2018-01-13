@@ -125,8 +125,7 @@ public class ClassroomController {
     public JSON queryDetail(@RequestParam("id") Integer id, HttpServletRequest request) {
         ListResult<Experiment> result = new ListResult<>();
         try {
-            SimpleDateFormat sdf = PeriodUtil.getSimpleDateFormat(TIME_TEMPLATE);
-            String currentTime = sdf.format(System.currentTimeMillis());
+            String currentTime = PeriodUtil.format(System.currentTimeMillis(), TIME_TEMPLATE);
             result.returnSuccess(classroomServiceImpl.getUsingStatement(id, currentTime));
         } catch (Exception e) {
             LOGGER.error("查询最近上的实验课失败:", e);
