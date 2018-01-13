@@ -95,14 +95,13 @@ public class MessageController {
     public JSON getTeacherList(HttpServletRequest request) {
         ListResult<MessageListDTO> result = new ListResult<>();
         try {
+            int state = StringUtil.getInteger(request.getParameter("state"));
             int page = StringUtil.getInteger(request.getParameter("page"));
             User localUser = SessionUtil.getUser(request.getSession());
             int localUserId = localUser.getId();
             List<MessageListDTO> dtos;
             if(localUser.getType().equals(UserType.STUDENT.getCode())) {
-                List<ExperimentMessage> messageList;// = Lists.newArrayList();
-                messageList = messageService.getReceiveList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
-                dtos = getMessageListDTO(messageList, localUser);
+                dtos = messageService.getReceiveListDTO(localUserId, state,page * PAGE_SIZE, PAGE_SIZE);
             } else {
                 List<Notice> notices = noticeService.getMessageList(localUserId, page * PAGE_SIZE, PAGE_SIZE);
                 dtos = getMessageListDTOFromNotice(notices);
@@ -114,22 +113,6 @@ public class MessageController {
             return (JSON) JSON.toJSON(result);
         }
         return (JSON) JSON.toJSON(result);
-    }
-
-    private List<MessageListDTO> getMessageListDTO(List<ExperimentMessage> messageList, User user) {
-        List<MessageListDTO> dtos = Lists.newArrayList();
-        for (ExperimentMessage message : messageList) {
-            MessageListDTO dto = new MessageListDTO();
-            dto.setId(message.getId());
-            dto.setTitle(message.getTitle());
-            dto.setContent(message.getContent());
-            dto.setCreatedDate(message.getCreatedDate());
-            dto.setEqName(experimentService.getById(message.getEpId()).getName());
-            dto.setSendUserName(userService.getById(message.getFromId()).getName());
-            dto.setHasRead(message.getHasRead());
-            dtos.add(dto);
-        }
-        return dtos;
     }
 
     private List<MessageListDTO> getMessageListDTOFromNotice(List<Notice> noticeList) {
@@ -187,6 +170,28 @@ public class MessageController {
         } catch (Exception e) {
             LOGGER.error(" 发送消息失败：", e.getMessage());
             result.returnSuccess("发送消息失败");
+            return (JSON) JSON.toJSON(result);
+        }
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON deleteMessage(@RequestParam("id") Integer id, HttpServletRequest request) {
+        SingleResult<Integer> result = new SingleResult<>();
+        try {
+            User user = SessionUtil.getUser(request.getSession());
+            ExperimentMessage message;
+            if(user.getType().equals( UserType.STUDENT)) {
+                messageService.deleteById(id);
+            } else {
+                noticeService.deleteById(id);
+            }
+
+            return (JSON) JSON.toJSON(200);
+
+        } catch (Exception e) {
+            LOGGER.error("删除消息失败：", e.getMessage());
+            result.returnError("删除消息失败");
             return (JSON) JSON.toJSON(result);
         }
     }

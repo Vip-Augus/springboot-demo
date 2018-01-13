@@ -77,7 +77,7 @@ public interface ExperimentMessageMapper extends BaseMapperTemplate<ExperimentMe
     @Override
     int updateByPrimaryKey(ExperimentMessage record);
 
-    List<ExperimentMessage> getReceiveMessageList(@Param("toId") int toId, @Param("offset")int offset, @Param("limit") int limit);
+    List<ExperimentMessage> getReceiveMessageList(@Param("toId") int toId, @Param("hasRead") int hasRead, @Param("offset")int offset, @Param("limit") int limit);
 
     List<ExperimentMessage> getSendMessageList(@Param("fromId") int fromId, @Param("offset")int offset, @Param("limit") int limit);
 }

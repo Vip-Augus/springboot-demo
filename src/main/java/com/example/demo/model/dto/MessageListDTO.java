@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * Created by GJW on 2018/1/7.
+ * 这名字起得真矬..
  */
 @Data
 public class MessageListDTO {

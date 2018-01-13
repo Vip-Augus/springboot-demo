@@ -2,7 +2,12 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.ExperimentMessageMapper;
 import com.example.demo.model.ExperimentMessage;
+import com.example.demo.model.User;
+import com.example.demo.model.dto.MessageListDTO;
 import com.example.demo.service.ExperimentMessageService;
+import com.example.demo.service.ExperimentService;
+import com.example.demo.service.UserService;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,25 +27,15 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
     @Autowired
     ExperimentMessageMapper messageDAO;
 
-    public List<ExperimentMessage> getConversitionDetail(String conversationId, int offset, int limit) {
-        return messageDAO.getConversitionDetail(conversationId, offset, limit);
-    }
+    @Autowired
+    ExperimentService experimentService;
 
-    public List<ExperimentMessage> getConversitionlist(int userId, int offset, int limit) {
-        return messageDAO.getConversitionList(userId, offset, limit);
-    }
+    @Autowired
+    UserService userService;
 
     public int addMessage(ExperimentMessage message) {
         return messageDAO.addMessage(message) > 0 ? message.getId() : 0;
     }
-
-    /*public int getCommentCount(int entityId, int entityType) {
-        return commentDAO.getCommentCount(entityId, entityType);
-    }
-
-    public boolean deleteComment(int id){
-        return commentDAO.updateStatus( id, 1) > 0;
-    }*/
 
     public int getUnreadCount(int userId, String conversationId){
         return messageDAO.getUnreadCount(userId, conversationId);
@@ -69,8 +64,8 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
     }
 
     @Override
-    public List<ExperimentMessage> getReceiveList(int toId, int offset, int limit) {
-        List<ExperimentMessage> messages = messageDAO.getReceiveMessageList(toId, offset, limit);
+    public List<ExperimentMessage> getReceiveList(int toId, int state, int offset, int limit) {
+        List<ExperimentMessage> messages = messageDAO.getReceiveMessageList(toId, state, offset, limit);
         if(messages == null) {
             return Collections.emptyList();
         }
@@ -83,5 +78,30 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
             return;
         }
         messageDAO.updateStatus(id, hasRead);
+    }
+
+    @Override
+    public List<MessageListDTO> getReceiveListDTO(int toId, int state, int offset, int limit) {
+        List<ExperimentMessage> messages = messageDAO.getReceiveMessageList(toId, state, offset, limit);
+        if(messages == null) {
+            return Collections.emptyList();
+        }
+        return getMessageListDTO(messages);
+    }
+
+    private List<MessageListDTO> getMessageListDTO(List<ExperimentMessage> messageList) {
+        List<MessageListDTO> dtos = Lists.newArrayList();
+        for (ExperimentMessage message : messageList) {
+            MessageListDTO dto = new MessageListDTO();
+            dto.setId(message.getId());
+            dto.setTitle(message.getTitle());
+            dto.setContent(message.getContent());
+            dto.setCreatedDate(message.getCreatedDate());
+            dto.setEqName(experimentService.getById(message.getEpId()).getName());
+            dto.setSendUserName(userService.getById(message.getFromId()).getName());
+            dto.setHasRead(message.getHasRead());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

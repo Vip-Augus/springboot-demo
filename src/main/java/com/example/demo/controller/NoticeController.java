@@ -45,8 +45,7 @@ public class NoticeController {
         int page = StringUtil.getInteger(request.getParameter("page"));
         ListResult<NoticeDTO> listResult = new ListResult<>();
         try {
-            List<Notice> notices = noticeService.getList(page*PAGE_SIZE, PAGE_SIZE);
-            List<NoticeDTO> dtos = getNoticeDTO(notices);
+            List<NoticeDTO> dtos = noticeService.getNoticeDTO(page*PAGE_SIZE, PAGE_SIZE);
             listResult.returnSuccess(dtos);
         } catch (Exception e) {
             LOGGER.error("获取公告列表失败" + e);
@@ -56,23 +55,7 @@ public class NoticeController {
         }
     }
 
-    private List<NoticeDTO> getNoticeDTO(List<Notice> notices) {
-        if(CollectionUtils.isEmpty(notices)) {
-            return Collections.emptyList();
-        }
-        List<NoticeDTO> dtos = Lists.newArrayList();
-        for(Notice notice : notices) {
-            NoticeDTO dto = new NoticeDTO();
-            dto.setId(notice.getId());
-            dto.setTitle(notice.getTitle());
-            dto.setContent(notice.getContent());
-            dto.setCreateTime(notice.getCreateTime());
-            dto.setCreateUserName(userService.getById(notice.getCreateId()).getName());
-            dto.setCreateId(notice.getCreateId());
-            dtos.add(dto);
-        }
-        return dtos;
-    }
+
 
     @RequestMapping(value = "send", method = {RequestMethod.POST})
     @ResponseBody
