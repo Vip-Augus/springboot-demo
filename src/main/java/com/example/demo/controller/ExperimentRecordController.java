@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @RestController
-@RequestMapping("/epRecord")
+@RequestMapping("/web/epRecord")
 public class ExperimentRecordController {
 
 

@@ -67,3 +67,62 @@ logging.config=classpath:logging-config.xml
 </root>
 ```
 
+## 使用Nginx进行访问日志输出
+
+### 安装完Nginx,修改nginx.conf配置,设置日志输出格式和地址
+```
+    http {
+        include       mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /usr/logs/nginx-access.log  main;
+
+        #sendfile        on;
+        #tcp_nopush     on;
+
+        #keepalive_timeout  0;
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+```
+### 进行路由转发
+```
+    upstream mior_xxx{
+       server 10.200.101.113:8099;
+    }
+
+   #for Web-Class
+    server {
+        listen       666;
+        server_name   192.168.68.82;
+        location / {
+            autoindex on;
+            proxy_pass       http://127.0.0.1:3000;
+            index  index.html index.htm;
+        }
+
+   #跨域转发配置, 加了前缀web进行区分
+    location ~ .*/web/.*$ {
+       proxy_pass       http://mior_xxx;
+       proxy_set_header Host $host;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header X-Real-IP $remote_addr;
+   }
+    error_page   500 502 503 504  /50x.html;
+       location = /50x.html {
+       root   html;
+   }
+```
+
+### 输出格式如下:
+```
+127.0.0.1 - - [13/Jan/2018:16:21:46 +0800] "GET /sockjs-node/info?t=1515831706931 HTTP/1.1" 200 88 "http://localhost:666/login" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7" "-"
+127.0.0.1 - - [13/Jan/2018:16:21:46 +0800] "GET /sockjs-node/639/iy2lkt3r/websocket HTTP/1.1" 400 40 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7" "-"
+127.0.0.1 - - [13/Jan/2018:16:21:48 +0800] "POST /web/user/login HTTP/1.1" 200 236 "http://localhost:666/login" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7" "-"
+127.0.0.1 - - [13/Jan/2018:16:22:24 +0800] "POST /sockjs-node/639/2fgkrbfq/xhr_streaming?t=1515831706955 HTTP/1.1" 200 7890 "http://localhost:666/login" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7" "-"
+```

@@ -33,7 +33,7 @@ import java.util.List;
  * Created by Administrator on 2018/1/9 0009.
  */
 @Controller
-@RequestMapping(value = "/score")
+@RequestMapping(value = "/web/score")
 public class ScoreController {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeController.class);
 

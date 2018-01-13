@@ -59,4 +59,11 @@ public interface UserService extends BaseServiceTemplate<User> {
      * @return
      */
     boolean updateUserAuth(User user);
+
+    /**
+     * 批量导入用户
+     * @param list  用户列表
+     * @return      插入的条数
+     */
+    int importUser(List<User> list);
 }

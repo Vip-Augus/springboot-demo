@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 @RestController
-@RequestMapping("epDetail")
+@RequestMapping("/web/epDetail")
 public class ExperimentDetailController {
 
     private static final String BASE_DIR = "epDetail/";

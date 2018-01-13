@@ -32,7 +32,7 @@ import java.util.List;
  * Created by GJW on 2018/1/5.
  */
 @RestController
-@RequestMapping(value = "/msg")
+@RequestMapping(value = "/web/msg")
 public class MessageController {
 
     private static final int PAGE_SIZE = 10;

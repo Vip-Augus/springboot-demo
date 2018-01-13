@@ -15,6 +15,7 @@ public class ExceptionDefinition implements BusinessMessage, Serializable {
 
     private String message;
 
+    @Override
     public String getCode() {
         return this.code;
     }
@@ -23,6 +24,7 @@ public class ExceptionDefinition implements BusinessMessage, Serializable {
         this.code = code;
     }
 
+    @Override
     public String getMessage() {
         return this.message;
     }
@@ -31,6 +33,7 @@ public class ExceptionDefinition implements BusinessMessage, Serializable {
         this.message = message;
     }
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

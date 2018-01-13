@@ -22,7 +22,7 @@ import java.util.List;
  * Created by GJW on 2018/1/7.
  */
 @RestController
-@RequestMapping(value = "/course/review")
+@RequestMapping(value = "/web/course/review")
 public class CourseReviewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseReviewController.class);
 

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by GJW on 2018/1/7.
  */
 @Controller
-@RequestMapping(value = "/notice")
+@RequestMapping(value = "/web/notice")
 public class NoticeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeController.class);
 

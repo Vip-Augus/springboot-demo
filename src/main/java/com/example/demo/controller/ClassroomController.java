@@ -29,7 +29,7 @@ import java.util.List;
  * Author by JingQ on 2018/1/4
  */
 @RestController
-@RequestMapping("/classroom")
+@RequestMapping("/web/classroom")
 public class ClassroomController {
 
     private static final String TIME_TEMPLATE = "yyyy-MM-dd";

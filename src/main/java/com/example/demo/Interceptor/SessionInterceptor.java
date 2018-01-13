@@ -1,6 +1,7 @@
 package com.example.demo.Interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.example.demo.exception.ExceptionDefinitions;
 import com.example.demo.model.User;
 import com.example.demo.model.dto.UserDTO;
 import com.example.demo.util.CodeConstants;
@@ -18,13 +19,13 @@ public class SessionInterceptor implements HandlerInterceptor{
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String URI = httpServletRequest.getRequestURI();
-        if(URI.equals("/user/login")) {
+        if(URI.equals("/web/user/login")) {
             return true;
         }
         User user =  (User) httpServletRequest.getSession().getAttribute("user_info");
         if(user == null) {
             SingleResult<UserDTO> result = new SingleResult<>();
-            result.returnError(CodeConstants.LOGIN_AGAIN);
+            result.returnError(ExceptionDefinitions.LOGIN_AGAIN);
             httpServletResponse.setCharacterEncoding("UTF-8");
             httpServletResponse.getWriter().append(JSON.toJSON(result).toString());
             httpServletResponse.getWriter().close();

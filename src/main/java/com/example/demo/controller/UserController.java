@@ -8,6 +8,7 @@ import com.example.demo.service.ExperimentUserService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.CodeConstants;
 import com.example.demo.util.ImportUtil;
+import com.example.demo.util.MD5Util;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.StringUtil;
 import com.example.demo.util.convert.UserConverter;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 用户控制器
@@ -32,7 +34,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "user")
+@RequestMapping(value = "/web/user")
 public class UserController {
 
     private static final int PAGE_SIZE = 10;
@@ -98,61 +100,7 @@ public class UserController {
         return (JSON) JSON.toJSON(result);
     }
 
-    @RequestMapping(value = "importStudent", method = RequestMethod.POST)
-    @ResponseBody
-    public JSON importStudent(@RequestParam("file") MultipartFile file, @RequestParam("epId") Integer epId, HttpServletRequest request) {
-        User user;
-        SingleResult<Integer> result = new SingleResult<>();
-        try {
-            user = SessionUtil.getUser(request.getSession());
-            //不是老师,无法导入学生资料
-            if (!UserType.TEACHER.equals(UserType.fromCode(user.getType()))) {
-                result.returnError(CodeConstants.FAIL_CREATE_EP);
-                return (JSON) JSON.toJSON(result);
-            }
-        } catch (Exception e) {
-            result.returnError(e.getMessage());
-            return (JSON) JSON.toJSON(result);
-        }
-        List<String> fileUserIds = filterUserIds(file);
-        List<User> existUsers = userServiceImpl.getByIdNumbers(fileUserIds, UserType.STUDENT.getCode());
-        List<Integer> existUserIds = Lists.transform(existUsers, new Function<User, Integer>() {
-            @Nullable
-            @Override
-            public Integer apply(@Nullable User user) {
-                return user.getId();
-            }
-        });
-        result.returnSuccess(experimentUserServiceImpl.batchAdd(epId, existUserIds));
-        return (JSON) JSON.toJSON(result);
-    }
 
-    private List<String> filterUserIds(MultipartFile file) {
-        List<String> contentList = Lists.newArrayList();
-        try {
-            if (file.isEmpty()) {
-                return null;
-            }
-            contentList = ImportUtil.exportListFromExcel(file.getInputStream(), 0);
-            Iterator<String> iterator = contentList.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().equals("|null|null|null|null|null|null")) {
-                    iterator.remove();
-                }
-            }
-        } catch (Exception e) {
-        }
-        //去掉第一行
-        contentList.remove(0);
-        if (CollectionUtils.isEmpty(contentList)) {
-            return null;
-        }
-        List<String> userIds = Lists.newArrayList();
-        for (String tmp : contentList) {
-            userIds.add(Lists.newArrayList(tmp.split("\\|")).get(1));
-        }
-        return userIds;
-    }
 
     //获取教师和管理员信息
     @RequestMapping(value = "teacher", method = RequestMethod.GET)
@@ -236,5 +184,69 @@ public class UserController {
         }
         result.returnSuccess(null);
         return (JSON) JSON.toJSON(result);
+    }
+
+    @RequestMapping(value = "importUser", method = RequestMethod.POST)
+    @ResponseBody
+    public JSON importStudent(@RequestParam("userType") Integer userType, @RequestParam("file") MultipartFile file) {
+        SingleResult<Integer> result = new SingleResult<>();
+        List<User> users = filterUser(userType, file);
+        try {
+            result.returnSuccess(userServiceImpl.importUser(users));
+        } catch (Exception e) {
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        return (JSON) JSON.toJSON(result);
+    }
+
+    private List<User> filterUser(Integer userType, MultipartFile file) {
+        List<String> contentList = Lists.newArrayList();
+        try {
+            if (file.isEmpty()) {
+                return null;
+            }
+            contentList = ImportUtil.exportListFromExcel(file.getInputStream(), 0);
+            Iterator<String> iterator = contentList.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().equals("|null|null|null|null|null|null|null|null|null|null|null|null|null|null")) {
+                    iterator.remove();
+                }
+            }
+        } catch (Exception e) {
+        }
+        //去掉第一行
+        contentList.remove(0);
+        if (CollectionUtils.isEmpty(contentList)) {
+            return null;
+        }
+        String initPassword = "123456";
+        List<User> users = Lists.newArrayList();
+        for (String tmp : contentList) {
+            List<String> content = Lists.newArrayList(tmp.split("\\|"));
+            //学号,专业,姓名,班级,入学时间,籍贯,民族,出生日期,性别,政治面貌,手机号码,邮箱,家庭住址,简介
+            User user = new User();
+            user.setType(userType);
+            user.setIdNumber(content.get(1));
+            String salt = UUID.randomUUID().toString();
+            String password = MD5Util.genMD5(MD5Util.genMD5(initPassword + salt));
+            user.setSalt(salt);
+            user.setPassword(password);
+            user.setProfession(content.get(2));
+            user.setName(content.get(3));
+            user.setClassTitle(content.get(4));
+            user.setJoinTime(content.get(5));
+            user.setNativePlace(content.get(6));
+            user.setEthnic(content.get(7));
+            user.setBirthday(content.get(8));
+            user.setGender(Integer.parseInt(content.get(9)));
+            user.setPolitical(content.get(10));
+            user.setPhone(content.get(11));
+            user.setEmail(content.get(12));
+            user.setAddress(content.get(13));
+            user.setIntroduction(content.get(14));
+            users.add(user);
+        }
+        return users;
     }
 }

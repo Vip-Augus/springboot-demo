@@ -25,6 +25,11 @@ public class ListResult<T> extends Result {
         setErrorMessage(errorMessage);
     }
 
+    public void returnError(BusinessException ex) {
+        setCode(ex.getCode());
+        setErrorMessage(ex.getMessage());
+    }
+
     public void returnError(String errorMessage, ErrorContext errorContext) {
         setErrorMessage(errorMessage);
         setErrorContext(errorContext);

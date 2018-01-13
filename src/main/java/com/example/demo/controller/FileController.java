@@ -26,7 +26,7 @@ import java.net.URLEncoder;
  * Author JingQ on 2017/12/20.
  */
 @RestController
-@RequestMapping(value = "/file")
+@RequestMapping(value = "/web/file")
 public class FileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);

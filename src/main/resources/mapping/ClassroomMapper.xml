@@ -7,11 +7,12 @@
         <result column="classroom" property="classroom" jdbcType="VARCHAR"/>
         <result column="capacity" property="capacity" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="principal" property="principal" jdbcType="VARCHAR"/>
         <result column="create_date" property="createDate" jdbcType="VARCHAR"/>
         <result column="modify_date" property="modifyDate" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, building_number, classroom, capacity, status, create_date, modify_date
+    id, building_number, classroom, capacity, status, principal, create_date, modify_date
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -27,7 +28,7 @@
         <if test="buildingNumber != null">
             WHERE building_number = #{buildingNumber, jdbcType=INTEGER}
         </if>
-        <if test="classroom != null">
+        <if test="classroom != null and classroom != '' ">
             AND classroom = #{classroom, jdbcType=VARCHAR}
         </if>
         <if test="status != null">
@@ -44,15 +45,16 @@
             SELECT gen_id('classroom') as id
         </selectKey>
         insert into classroom (id, building_number, classroom,
-        capacity, status, create_date)
+        capacity, status, principal, create_date)
         values (#{id, jdbcType=INTEGER}, #{buildingNumber,jdbcType=INTEGER}, #{classroom,jdbcType=VARCHAR},
-        #{capacity,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, sysdate() + '0')
+        #{capacity,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{principal, jdbcType=VARCHAR}, sysdate() + '0')
     </insert>
     <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Classroom">
     update classroom
     set building_number = #{buildingNumber,jdbcType=INTEGER},
       classroom = #{classroom,jdbcType=VARCHAR},
       capacity = #{capacity,jdbcType=INTEGER},
+      principal = #{principal, jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       modify_date = sysdate() + '0'
     where id = #{id,jdbcType=INTEGER}
