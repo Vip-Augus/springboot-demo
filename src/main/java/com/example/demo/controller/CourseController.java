@@ -21,7 +21,7 @@ import java.util.List;
  * Created by GJW on 2018/1/7.
  */
 @RestController
-@RequestMapping(value = "/course")
+@RequestMapping(value = "/web/course")
 public class CourseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 

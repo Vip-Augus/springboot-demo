@@ -8,8 +8,10 @@ import com.example.demo.model.enums.ClassTime;
 import com.example.demo.service.ClassroomService;
 import com.example.demo.service.CourseService;
 import com.example.demo.service.ExperimentService;
+import com.example.demo.util.PeriodUtil;
 import com.example.demo.util.result.BusinessException;
 import com.example.demo.util.result.ExceptionDefinition;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 /**
  * Author JingQ on 2017/12/24.
  */
+@Slf4j
 @Service
 public class ExperimentServiceImpl implements ExperimentService {
 
@@ -38,7 +41,7 @@ public class ExperimentServiceImpl implements ExperimentService {
     @Override
     public int update(Experiment record) {
         if (!isValid(record)) {
-            return 0;
+            throw new BusinessException(new ExceptionDefinition("EP000101", "实验室时间冲突"));
         }
         return experimentMapper.updateByPrimaryKey(record);
     }
@@ -53,10 +56,14 @@ public class ExperimentServiceImpl implements ExperimentService {
         Course course = courseServiceImpl.getById(record.getCourseId());
         //没有这门课---异常抛出后续再加
         if (course == null) {
-            throw new BusinessException(new ExceptionDefinition("0000111", "没有这门课"));
+            BusinessException exception = new BusinessException(new ExceptionDefinition("0000111", "没有这门课"));
+            log.error("没有这门课", exception);
+            throw exception;
         }
         if (!isValid(record)) {
-            throw new BusinessException(new ExceptionDefinition("0001111", "实验室地点被占用了,无法添加该课程"));
+            BusinessException exception = new BusinessException(new ExceptionDefinition("0001111", "实验室地点被占用了,无法添加该课程"));
+            log.error("实验室地点被占用", exception);
+            throw exception;
         }
         experimentMapper.insert(record);
         return record;
@@ -78,10 +85,18 @@ public class ExperimentServiceImpl implements ExperimentService {
      * @return                  实验室是否可用
      */
     private boolean isValid(Experiment record) {
+        Experiment oldExperiment = experimentMapper.selectByPrimaryKey(record.getId());
         ClassTime classTime = ClassTime.fromCode(record.getDay());
         Classroom classroom = classroomServiceImpl.getById(record.getClassroomId());
         List<Integer> periodsBegin = classroomServiceImpl.getPeriods(classTime, record.getBeginPeriod(), classroom);
         List<Integer> periodsEnd = classroomServiceImpl.getPeriods(classTime, record.getEndPeriod(), classroom);
+        List<Integer> periodsOld = PeriodUtil.getSectionClass(oldExperiment.getClassBegin(), oldExperiment.getClassEnd());
+        if (periodsBegin.containsAll(periodsOld)) {
+            periodsBegin.removeAll(periodsOld);
+        }
+        if (periodsEnd.containsAll(periodsOld)) {
+            periodsEnd.removeAll(periodsOld);
+        }
         //实验室地点被占用了,无法添加该课程
         if (periodsBegin.contains(record.getClassBegin()) || periodsBegin.contains(record.getClassEnd())
                 || periodsEnd.contains(record.getClassBegin()) || periodsEnd.contains(record.getClassEnd())) {

@@ -4,8 +4,8 @@
     <resultMap id="BaseResultMap" type="com.example.demo.model.User" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
-        <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="phone" property="phone" jdbcType="VARCHAR" />
         <result column="birthday" property="birthday" jdbcType="VARCHAR" />
         <result column="address" property="address" jdbcType="VARCHAR" />
@@ -14,10 +14,21 @@
         <result column="salt" property="salt" jdbcType="VARCHAR" />
         <result column="create_date" property="createDate" jdbcType="VARCHAR" />
         <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
-        <result column="authority" jdbcType="CHAR" property="authority" />
+        <result column="authority" property="authority" jdbcType="CHAR" />
+        <result column="profession" property="profession" jdbcType="VARCHAR" />
+        <result column="class_title" property="classTitle" jdbcType="VARCHAR" />
+        <result column="join_time" property="joinTime" jdbcType="VARCHAR" />
+        <result column="native_place" property="nativePlace" jdbcType="VARCHAR" />
+        <result column="ethnic" property="ethnic" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="TINYINT" />
+        <result column="political" property="political" jdbcType="VARCHAR" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="introduction" property="introduction" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        id, id_number, password, name, phone, birthday, address, college_id, type, salt, create_date, modify_date, authority
+      id, id_number, password, name, phone, birthday, address, college_id, type, salt,
+      create_date, modify_date, authority, profession, class_title, join_time, native_place,
+      ethnic, gender, political, email, introduction
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
@@ -52,27 +63,69 @@
         <selectKey resultType="INTEGER" order="BEFORE" keyProperty="id">
             SELECT gen_id('user') as id
         </selectKey>
-        insert into `user` (id, id_number, name, password,
-        phone, birthday, address,
-        college_id, type, salt, create_date, authority)
-        values (#{id, jdbcType=INTEGER}, #{idNumber,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},
-        #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-        #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{salt, jdbcType=VARCHAR}, sysdate() + '0', #{authority, jdbcType=CHAR})
+        insert into `user` (id, id_number, password,
+        name, phone, birthday,
+        address, college_id, type,
+        salt, create_date,
+        authority, profession, class_title,
+        join_time, native_place, ethnic,
+        gender, political, email,
+        introduction)
+        values (#{id, jdbcType=INTEGER}, #{idNumber,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+        #{salt,jdbcType=VARCHAR}, sysdate() + '0',
+        #{authority,jdbcType=CHAR}, #{profession,jdbcType=VARCHAR}, #{classTitle,jdbcType=VARCHAR},
+        #{joinTime,jdbcType=VARCHAR}, #{nativePlace,jdbcType=VARCHAR}, #{ethnic,jdbcType=VARCHAR},
+        #{gender,jdbcType=TINYINT}, #{political,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{introduction,jdbcType=VARCHAR})
+    </insert>
+    <insert id="batchInsert">
+        insert into `user` (id, id_number, password,
+        name, phone, birthday,
+        address, college_id, type,
+        salt, create_date, modify_date,
+        authority, profession, class_title,
+        join_time, native_place, ethnic,
+        gender, political, email,
+        introduction)
+        values
+        <foreach collection="list" index="index" separator="," item="item">
+            (gen_id('user'), #{item.idNumber,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR},
+            #{item.name,jdbcType=VARCHAR}, #{item.phone,jdbcType=VARCHAR}, #{item.birthday,jdbcType=VARCHAR},
+            #{item.address,jdbcType=VARCHAR}, #{item.collegeId,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER},
+            #{item.salt,jdbcType=VARCHAR}, sysdate() + '0', NULL ,
+            #{item.authority,jdbcType=CHAR}, #{item.profession,jdbcType=VARCHAR}, #{item.classTitle,jdbcType=VARCHAR},
+            #{item.joinTime,jdbcType=VARCHAR}, #{item.nativePlace,jdbcType=VARCHAR}, #{item.ethnic,jdbcType=VARCHAR},
+            #{item.gender,jdbcType=TINYINT}, #{item.political,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
+            #{item.introduction,jdbcType=VARCHAR})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        modify_date = sysdate() + '0'
     </insert>
     <update id="updateByPrimaryKey" parameterType="com.example.demo.model.User" >
-        update `user`
-        set id_number = #{idNumber,jdbcType=VARCHAR},
-        name = #{name,jdbcType=VARCHAR},
-        password = #{password, jdbcType=VARCHAR},
-        phone = #{phone,jdbcType=VARCHAR},
-        birthday = #{birthday,jdbcType=VARCHAR},
-        address = #{address,jdbcType=VARCHAR},
-        college_id = #{collegeId,jdbcType=INTEGER},
-        type = #{type,jdbcType=INTEGER},
-        salt = #{salt, jdbcType=VARCHAR},
-        modify_date = sysdate() + '0',
-        authority = #{authority, jdbcType=CHAR}
-        where id = #{id,jdbcType=INTEGER}
+      update user
+      set id_number = #{idNumber,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      college_id = #{collegeId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      salt = #{salt,jdbcType=VARCHAR},
+      modify_date = sysdate() + '0',
+      authority = #{authority,jdbcType=CHAR},
+      profession = #{profession,jdbcType=VARCHAR},
+      class_title = #{classTitle,jdbcType=VARCHAR},
+      join_time = #{joinTime,jdbcType=VARCHAR},
+      native_place = #{nativePlace,jdbcType=VARCHAR},
+      ethnic = #{ethnic,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=TINYINT},
+      political = #{political,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select

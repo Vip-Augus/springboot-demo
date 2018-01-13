@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  * Author by JingQ on 2018/1/1
  */
 @RestController
-@RequestMapping(value = "/college")
+@RequestMapping(value = "/web/college")
 public class CollegeController {
 
     @Autowired

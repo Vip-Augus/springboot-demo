@@ -18,6 +18,11 @@ public class Classroom implements Serializable{
 
     private Integer capacity;
 
+    /**
+     *实验室负责人,cyq说要加的
+     */
+    private String principal;
+
     private Integer status;
 
     private String createDate;
@@ -78,6 +83,14 @@ public class Classroom implements Serializable{
 
     public void setModifyDate(String modifyDate) {
         this.modifyDate = modifyDate;
+    }
+
+    public String getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(String principal) {
+        this.principal = principal;
     }
 
     @Override

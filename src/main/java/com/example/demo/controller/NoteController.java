@@ -29,7 +29,7 @@ import java.util.List;
  * @date 2018/1/12
  */
 @RestController
-@RequestMapping(value = "/note")
+@RequestMapping(value = "/web/note")
 public class NoteController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoteController.class);

@@ -33,7 +33,7 @@ import java.util.List;
  * Created by Administrator on 2018/1/9 0009.
  */
 @Controller
-@RequestMapping(value = "/score")
+@RequestMapping(value = "/web/score")
 public class ScoreController {
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeController.class);
 
@@ -109,40 +109,7 @@ public class ScoreController {
             params.setScoreList(scores.getScoreList());
             params.setScoreListSQL(scoreService.getList(params.epRecordId));
             params.setSubmit(scores.getSubmit());
-            if(params.scoreListSQL.get(0).getSubmit() == 1) {
-                result.returnError("已经批过");
-            }
-            else if(params.getSubmit() == 1) {
-                boolean flag = true;
-                List<Integer> stuIds = new ArrayList<Integer>();
-                for(Score score : params.scoreList) {
-                    if(score.getScore() == null) {
-                        flag = false;
-                        result.returnError("没有完成批阅");
-                        break;
-                    }
-                    stuIds.add(score.getStudentId());
-                }
-                if(flag) {
-                    for (Score scoreSQL : params.scoreListSQL) {
-                        if(!stuIds.contains(scoreSQL.getStudentId())) {
-                            if(scoreSQL.getScore() == null) {
-                                flag = false;
-                                result.returnError("没有完成批阅");
-                                break;
-                            }
-                        }
-                    }
-                    if(flag){
-                        save(params);
-                        result.returnSuccess(null);
-                    }
-                }
-            }
-            else {
-                save(params);
-                result.returnSuccess(null);
-            }
+            getResult(params, result);
         } catch (Exception e) {
             LOGGER.error("获取分数列表失败" + e);
             result.returnError("获取分数列表失败");
@@ -172,4 +139,66 @@ public class ScoreController {
         }
     }
 
+    private void getResult(Params params, SingleResult<Integer> result){
+        if(params.scoreListSQL.get(0).getSubmit() == 1) {
+            result.returnError("已经批过");
+        }
+        else if(params.getSubmit() == 1) {
+            boolean flag = true;
+            List<Integer> stuIds = new ArrayList<Integer>();
+            for(Score score : params.scoreList) {
+                if(score.getScore() == null) {
+                    flag = false;
+                    result.returnError("没有完成批阅");
+                    break;
+                }
+                stuIds.add(score.getStudentId());
+            }
+            if(flag) {
+                for (Score scoreSQL : params.scoreListSQL) {
+                    if(!stuIds.contains(scoreSQL.getStudentId())) {
+                        if(scoreSQL.getScore() == null) {
+                            flag = false;
+                            result.returnError("没有完成批阅");
+                            break;
+                        }
+                    }
+                }
+                if(flag){
+                    save(params);
+                    result.returnSuccess(null);
+                }
+            }
+        }
+        else {
+            save(params);
+            result.returnSuccess(null);
+        }
+    }
+
+    /**
+     * 获取分数列表
+     * @param request
+     * @return
+     */
+    /*@RequestMapping(value = "getNoMarkTest", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON getNoMarkTest(HttpServletRequest request) {
+        int limit = StringUtil.getInteger(request.getParameter("limit"));
+        SingleResult<ScoresDTO> result = new SingleResult<>();
+        try {
+            //Integer teacherId = SessionUtil.getUser(request.getSession()).getId();
+            Integer tId = StringUtil.getInteger(request.getParameter("tId"));
+            ScoresDTO scoresDTO = new ScoresDTO();
+            //scoresDTO.setCount(scoreService.getCount(eprecordId));
+            List<ScoreDTO> dtos = scoreService.getByTeacherId(tId, limit);
+            scoresDTO.setScoreList(dtos);
+            result.returnSuccess(scoresDTO);
+        } catch (Exception e) {
+            LOGGER.error("获取分数列表失败" + e);
+            result.returnError("获取分数列表失败");
+        } finally {
+            return (JSON) JSON.toJSON(result);
+        }
+    }*/
 }

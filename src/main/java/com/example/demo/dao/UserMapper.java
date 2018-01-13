@@ -54,4 +54,11 @@ public interface UserMapper extends BaseMapperTemplate<User> {
      * @return
      */
     boolean updateUser(User user);
+
+    /**
+     * 批量插入用户
+     * @param list
+     * @return
+     */
+    int batchInsert(@Param("list") List<User> list);
 }

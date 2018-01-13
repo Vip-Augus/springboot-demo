@@ -12,13 +12,14 @@ public abstract class Result implements Serializable{
 
     private static final long serialVersionUID = -3295991523122453977L;
 
+
     private boolean success = false;
 
     private ErrorContext errorContext;
 
     private String errorMessage;
 
-    private Integer code;
+    private String code;
 
     private String description;
 
@@ -45,5 +46,21 @@ public abstract class Result implements Serializable{
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

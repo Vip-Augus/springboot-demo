@@ -8,8 +8,8 @@
     <result column="student_id" property="studentId" jdbcType="INTEGER" />
     <result column="score" property="score" jdbcType="INTEGER" />
     <result column="comment" property="comment" jdbcType="VARCHAR" />
-    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
     <result column="submit" property="submit" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -85,10 +85,10 @@
         #{comment,jdbcType=VARCHAR},
       </if>
       <if test="createDate != null" >
-        #{createDate,jdbcType=TIMESTAMP},
+        #{createDate,jdbcType=VARCHAR},
       </if>
       <if test="modifyDate != null" >
-        #{modifyDate,jdbcType=TIMESTAMP},
+        #{modifyDate,jdbcType=VARCHAR},
       </if>
       <if test="submit != null" >
         #{submit,jdbcType=INTEGER},
@@ -114,10 +114,10 @@
         comment = #{comment,jdbcType=VARCHAR},
       </if>
       <if test="createDate != null" >
-        create_date = #{createDate,jdbcType=TIMESTAMP},
+        create_date = #{createDate,jdbcType=VARCHAR},
       </if>
       <if test="modifyDate != null" >
-        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+        modify_date = #{modifyDate,jdbcType=VARCHAR},
       </if>
       <if test="submit != null" >
         submit = #{submit,jdbcType=INTEGER},
@@ -132,8 +132,8 @@
       student_id = #{studentId,jdbcType=INTEGER},
       score = #{score,jdbcType=INTEGER},
       comment = #{comment,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      create_date = #{createDate,jdbcType=VARCHAR},
+      modify_date = #{modifyDate,jdbcType=VARCHAR},
       submit = #{submit,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -149,6 +149,13 @@
         <include refid="Base_Column_List" />
         from score
         where eprecord_id = #{eprecordId,jdbcType=INTEGER}
+    </select>
+    <select id="selectByEpIdNoMark" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from score
+        where eprecord_id = #{eprecordId,jdbcType=INTEGER} AND score IS NULL
+        limit #{limit}
     </select>
     <select id="selectByEpIdAndStuId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select

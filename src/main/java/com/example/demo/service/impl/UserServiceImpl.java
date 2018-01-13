@@ -93,4 +93,9 @@ public class UserServiceImpl implements UserService {
     public boolean updateUserAuth(User user) {
         return userMapper.updateUser(user);
     }
+
+    @Override
+    public int importUser(List<User> list) {
+        return userMapper.batchInsert(list);
+    }
 }

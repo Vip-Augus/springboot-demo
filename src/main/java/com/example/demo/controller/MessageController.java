@@ -14,7 +14,6 @@ import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.Result;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.collect.Lists;
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import org.omg.CORBA.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ import java.util.List;
  * Created by GJW on 2018/1/5.
  */
 @RestController
-@RequestMapping(value = "/msg")
+@RequestMapping(value = "/web/msg")
 public class MessageController {
 
     private static final int PAGE_SIZE = 10;
