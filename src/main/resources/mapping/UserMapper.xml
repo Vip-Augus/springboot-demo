@@ -137,7 +137,7 @@
         select
         <include refid="Base_Column_List" />
         from `user`
-        where type = 0 or type = 1
+        where (type = 0 or type = 1) <if test="name != null" >AND name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')</if>
         ORDER BY id_number
         LIMIT #{offset},#{limit}
     </select>

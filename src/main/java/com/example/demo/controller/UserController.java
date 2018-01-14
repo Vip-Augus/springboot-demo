@@ -3,17 +3,11 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.User;
 import com.example.demo.model.dto.UserDTO;
-import com.example.demo.model.enums.UserType;
 import com.example.demo.service.ExperimentUserService;
 import com.example.demo.service.UserService;
-import com.example.demo.util.CodeConstants;
-import com.example.demo.util.ImportUtil;
-import com.example.demo.util.MD5Util;
-import com.example.demo.util.SessionUtil;
-import com.example.demo.util.StringUtil;
+import com.example.demo.util.*;
 import com.example.demo.util.convert.UserConverter;
 import com.example.demo.util.result.SingleResult;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
@@ -110,7 +103,8 @@ public class UserController {
         SingleResult<List<UserDTO>> result = new SingleResult<>();
         try {
             int page = StringUtil.getInteger(request.getParameter("page"));
-            userList = userConverter.users2DTOS(userServiceImpl.getTeachers(page * PAGE_SIZE, PAGE_SIZE));
+            String name = request.getParameter("name");
+            userList = userConverter.users2DTOS(userServiceImpl.getTeachers(page * PAGE_SIZE, PAGE_SIZE, name));
         } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);

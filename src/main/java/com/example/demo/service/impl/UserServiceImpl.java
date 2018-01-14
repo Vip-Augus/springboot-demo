@@ -74,8 +74,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getTeachers(int offset, int limit) {
-        List<User> userList = userMapper.selectTeachers(offset, limit);
+    public List<User> getTeachers(int offset, int limit, String name) {
+        List<User> userList = userMapper.selectTeachers(offset, limit, name);
         if(userList == null) {
             return Collections.emptyList();
         }
