@@ -13,12 +13,14 @@ import com.example.demo.util.CodeConstants;
 import com.example.demo.util.ImportUtil;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.convert.EPConverter;
+import com.example.demo.util.result.BusinessException;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,10 +79,22 @@ public class ExperimentController {
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional
     public JSON add(@RequestBody Experiment experiment, HttpServletRequest request) {
         SingleResult<Experiment> result = new SingleResult<>();
+        Experiment insertEP;
         //插入成功后，将老师id与实验课绑定
-        Experiment insertEP = experimentServiceImpl.add(experiment);
+        try {
+             insertEP = experimentServiceImpl.add(experiment);
+        } catch (BusinessException e) {
+            log.error("创建实验课失败: ", e);
+            result.returnError(e);
+            return (JSON) JSON.toJSON(result);
+        } catch (Exception e) {
+            log.error("创建实验课失败", e);
+            result.returnError("创建实验课失败");
+            return (JSON) JSON.toJSON(result);
+        }
         if (insertEP == null) {
             result.returnError(CodeConstants.CLASS_TIME_CONFLICT);
             return (JSON) JSON.toJSON(result);
@@ -118,7 +132,6 @@ public class ExperimentController {
                 List<Experiment> experimentList = experimentServiceImpl.getByIds(epIds);
                 result.returnSuccess(epConverter.epList2DTOList(experimentList));
             }
-            result.returnSuccess(Lists.newArrayList());
         } catch (Exception e) {
             log.error("查询实验课失败: ", e);
             result.returnError(e.getMessage());

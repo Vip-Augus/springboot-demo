@@ -61,6 +61,8 @@ public class CourseReviewController {
                     Course course = getCourseFromReview(id);
                     courseService.add(course);
                     result.returnSuccess(course);
+                } else {
+                    result.returnSuccess(null);
                 }
             } else {
                 result.returnError("参数非法");

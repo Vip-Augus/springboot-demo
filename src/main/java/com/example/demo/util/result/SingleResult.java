@@ -21,6 +21,7 @@ public class SingleResult<T> extends Result implements Serializable {
     }
 
     public void returnSuccess(T entity) {
+        setCode("200");
         setSuccess(true);
         this.entity = entity;
     }

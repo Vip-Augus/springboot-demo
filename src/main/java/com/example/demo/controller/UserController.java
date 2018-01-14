@@ -236,7 +236,7 @@ public class UserController {
             user.setType(userType);
             user.setIdNumber(content.get(1));
             String salt = UUID.randomUUID().toString();
-            String password = MD5Util.genMD5(MD5Util.genMD5(initPassword + salt));
+            String password = MD5Util.genMD5(MD5Util.genMD5(initPassword) + salt);
             user.setSalt(salt);
             user.setPassword(password);
             user.setProfession(content.get(2));
