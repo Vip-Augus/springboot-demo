@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.UserMapper;
 import com.example.demo.model.User;
+import com.example.demo.model.UserPage;
 import com.example.demo.service.UserService;
 import com.example.demo.util.MD5Util;
 import com.example.demo.util.StringUtil;
@@ -97,5 +98,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public int importUser(List<User> list) {
         return userMapper.batchInsert(list);
+    }
+
+    @Override
+    public UserPage getByPage(Integer type, Integer page, Integer pageSize) {
+        UserPage userPage = new UserPage();
+        userPage.setTotalCount(userMapper.selectAllCountByType(type));
+        userPage.setList(userMapper.selectByPage(type, page, pageSize));
+        return userPage;
     }
 }

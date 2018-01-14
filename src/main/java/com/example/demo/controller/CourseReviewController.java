@@ -79,6 +79,7 @@ public class CourseReviewController {
         try {
             User user = SessionUtil.getUser(request.getSession());
             courseReview.setCreateId(user.getId());
+            courseReview.setApplicant(user.getName());
             courseReview.setCreateDate(new Date());
             courseReview.setState(0);
             CourseReview review = courseReviewService.add(courseReview);

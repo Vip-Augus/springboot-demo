@@ -67,7 +67,7 @@
         name, phone, birthday,
         address, college_id, type,
         salt, create_date,
-        authority, profession, class_title,
+        profession, class_title,
         join_time, native_place, ethnic,
         gender, political, email,
         introduction)
@@ -75,7 +75,7 @@
         #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
         #{address,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
         #{salt,jdbcType=VARCHAR}, sysdate() + '0',
-        #{authority,jdbcType=CHAR}, #{profession,jdbcType=VARCHAR}, #{classTitle,jdbcType=VARCHAR},
+        #{profession,jdbcType=VARCHAR}, #{classTitle,jdbcType=VARCHAR},
         #{joinTime,jdbcType=VARCHAR}, #{nativePlace,jdbcType=VARCHAR}, #{ethnic,jdbcType=VARCHAR},
         #{gender,jdbcType=TINYINT}, #{political,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
         #{introduction,jdbcType=VARCHAR})
@@ -85,7 +85,7 @@
         name, phone, birthday,
         address, college_id, type,
         salt, create_date, modify_date,
-        authority, profession, class_title,
+        profession, class_title,
         join_time, native_place, ethnic,
         gender, political, email,
         introduction)
@@ -95,7 +95,7 @@
             #{item.name,jdbcType=VARCHAR}, #{item.phone,jdbcType=VARCHAR}, #{item.birthday,jdbcType=VARCHAR},
             #{item.address,jdbcType=VARCHAR}, #{item.collegeId,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER},
             #{item.salt,jdbcType=VARCHAR}, sysdate() + '0', NULL ,
-            #{item.authority,jdbcType=CHAR}, #{item.profession,jdbcType=VARCHAR}, #{item.classTitle,jdbcType=VARCHAR},
+            #{item.profession,jdbcType=VARCHAR}, #{item.classTitle,jdbcType=VARCHAR},
             #{item.joinTime,jdbcType=VARCHAR}, #{item.nativePlace,jdbcType=VARCHAR}, #{item.ethnic,jdbcType=VARCHAR},
             #{item.gender,jdbcType=TINYINT}, #{item.political,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR},
             #{item.introduction,jdbcType=VARCHAR})
@@ -140,6 +140,36 @@
         where (type = 0 or type = 1) <if test="name != null" >AND name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')</if>
         ORDER BY id_number
         LIMIT #{offset},#{limit}
+    </select>
+    <select id="selectAllCountByType" resultType="int">
+        SELECT count(*) FROM `user`
+        <if test="type != null">
+            where
+            <if test="type != 2">
+                type = 0 OR type = 1
+            </if>
+            <if test="type == 2">
+                type = 2
+            </if>
+        </if>
+    </select>
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM `user`
+        <if test="type != null">
+            WHERE
+            <if test="type != 2">
+                type = 0 OR type = 1
+            </if>
+            <if test="type == 2">
+                type = 2
+            </if>
+        </if>
+        ORDER BY id_number
+        <if test="offset != 0 and limit != 0">
+            limit #{offset}, #{limit}
+        </if>
     </select>
     <delete id="deleteByIdNumber" parameterType="java.lang.String" >
         delete from `user`
@@ -188,7 +218,7 @@
     <update id="updateAuth">
         UPDATE `user`
         SET
-        authority = #{authority,jdbcType=CHAR},
+        authority = #{auth,jdbcType=CHAR},
         type = #{type, jdbcType=INTEGER}
         where id = #{userId, jdbcType=INTEGER}
     </update>

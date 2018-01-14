@@ -3,11 +3,18 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.User;
 import com.example.demo.model.dto.UserDTO;
+import com.example.demo.model.dto.UserPageDTO;
+import com.example.demo.model.enums.UserType;
 import com.example.demo.service.ExperimentUserService;
 import com.example.demo.service.UserService;
-import com.example.demo.util.*;
+import com.example.demo.util.CodeConstants;
+import com.example.demo.util.ImportUtil;
+import com.example.demo.util.MD5Util;
+import com.example.demo.util.SessionUtil;
+import com.example.demo.util.StringUtil;
 import com.example.demo.util.convert.UserConverter;
 import com.example.demo.util.result.SingleResult;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
@@ -113,6 +121,20 @@ public class UserController {
         return (JSON) JSON.toJSON(result);
     }
 
+    @RequestMapping(value = "list", method = RequestMethod.GET)
+    @ResponseBody
+    public JSON getUsers(@RequestParam("type") Integer type, @RequestParam("page") Integer page) {
+        SingleResult<UserPageDTO> result = new SingleResult<>();
+        try {
+            //前端大老说前端进行分页
+            result.returnSuccess(userConverter.userPage2DTO(userServiceImpl.getByPage(type, 0, 0)));
+        } catch (Exception e) {
+            result.returnError(e.getMessage());
+            return (JSON) JSON.toJSON(result);
+        }
+        return (JSON) JSON.toJSON(result);
+    }
+
     //根据idNumber删除User
     @RequestMapping(value = "delete", method = RequestMethod.GET)
     @ResponseBody
@@ -120,7 +142,7 @@ public class UserController {
         SingleResult<List<User>> result = new SingleResult<>();
         try {
             Boolean deleteBoolean = userServiceImpl.deleteByIdNumber(idNumber);
-            if(!deleteBoolean) {
+            if (!deleteBoolean) {
                 result.returnError(CodeConstants.NO_DATA);
                 return (JSON) JSON.toJSON(result);
             }
@@ -133,18 +155,18 @@ public class UserController {
     }
 
     //根据idNumber更新UserAuthority
-    @RequestMapping(value = "auth", method = RequestMethod.POST)
+    @RequestMapping(value = "auth", method = RequestMethod.GET)
     @ResponseBody
     public JSON updateUserAuth(@RequestParam("userId") Integer userId, @RequestParam("auth") String auth, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
         try {
-            Integer authority = Integer.valueOf(auth,2);
+            Integer authority = Integer.valueOf(auth, 2);
             Integer type = 1;
-            if((authority & 1) == 1) {
+            if ((authority & 1) == 1) {
                 type = 0;
             }
             Boolean updateBoolean = userServiceImpl.updateUserAuth(userId, String.valueOf(authority), type);
-            if(!updateBoolean) {
+            if (!updateBoolean) {
                 result.returnError("更新失败");
                 return (JSON) JSON.toJSON(result);
             }

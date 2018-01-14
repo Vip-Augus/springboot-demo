@@ -114,8 +114,11 @@ public class ExperimentController {
         }
         try {
             List<Integer> epIds = experimentUserServiceImpl.getEPIDsByUserID(user.getId());
-            List<Experiment> experimentList = experimentServiceImpl.getByIds(epIds);
-            result.returnSuccess(epConverter.epList2DTOList(experimentList));
+            if (!CollectionUtils.isEmpty(epIds)) {
+                List<Experiment> experimentList = experimentServiceImpl.getByIds(epIds);
+                result.returnSuccess(epConverter.epList2DTOList(experimentList));
+            }
+            result.returnSuccess(Lists.newArrayList());
         } catch (Exception e) {
             log.error("查询实验课失败: ", e);
             result.returnError(e.getMessage());

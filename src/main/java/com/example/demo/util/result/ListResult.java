@@ -12,6 +12,8 @@ public class ListResult<T> extends Result {
 
     private List<T> list;
 
+    private Integer totalCount;
+
     public ListResult() {
 
     }
@@ -41,5 +43,13 @@ public class ListResult<T> extends Result {
 
     public void setList(List<T> list) {
         this.list = list;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 }

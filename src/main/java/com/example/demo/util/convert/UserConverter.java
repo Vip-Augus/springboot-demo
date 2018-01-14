@@ -1,7 +1,9 @@
 package com.example.demo.util.convert;
 
 import com.example.demo.model.User;
+import com.example.demo.model.UserPage;
 import com.example.demo.model.dto.UserDTO;
+import com.example.demo.model.dto.UserPageDTO;
 import com.google.common.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -51,5 +53,18 @@ public class UserConverter extends ModelMapper {
             userDTO.setAuthority(authority);
         }
         return userDTOS;
+    }
+
+    /**
+     * userPage ---> userPage DTO
+     *
+     * @param page 分页
+     * @return DTO
+     */
+    public UserPageDTO userPage2DTO(UserPage page) {
+        if (page == null) {
+            return null;
+        }
+        return this.map(page, UserPageDTO.class);
     }
 }

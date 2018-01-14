@@ -16,6 +16,11 @@ public class CourseReview implements Serializable {
 
     private Integer createId;
 
+    /**
+     * 申请人名字
+     */
+    private String applicant;
+
     private Date createDate;
 
     private Integer state;
@@ -94,6 +99,14 @@ public class CourseReview implements Serializable {
 
     public void setReason(String reason) {
         this.reason = reason == null ? null : reason.trim();
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
     }
 
     @Override

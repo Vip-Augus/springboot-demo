@@ -77,4 +77,19 @@ public interface UserMapper extends BaseMapperTemplate<User> {
      * @return          结果
      */
     boolean updateAuth(@Param("userId") Integer userId, @Param("auth") String auth, @Param("type") Integer type);
+
+    /**
+     * 全部用户数量
+     * @return 全部用户数量
+     */
+    int selectAllCountByType(@Param("type") Integer type);
+
+    /**
+     * 分页查询用户
+     * @param type      角色信息
+     * @param offset    位移量
+     * @param limit     限制量
+     * @return          分页查询列表
+     */
+    List<User> selectByPage(@Param("type") Integer type, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }

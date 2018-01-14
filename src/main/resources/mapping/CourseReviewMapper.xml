@@ -7,13 +7,14 @@
     <result column="brief" property="brief" jdbcType="VARCHAR" />
     <result column="period" property="period" jdbcType="INTEGER" />
     <result column="test" property="test" jdbcType="INTEGER" />
+    <result column="applicant" property="applicant" jdbcType="VARCHAR" />
     <result column="create_id" property="createId" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="state" property="state" jdbcType="INTEGER" />
     <result column="reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, brief, period, test, create_id, create_date, state, reason
+    id, name, brief, period, test, create_id, applicant, create_date, state, reason
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -27,11 +28,11 @@
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.CourseReview" >
     insert into course_review (id, name, brief, 
-      period, test, create_id, 
+      period, test, create_id, applicant,
       create_date, state, reason
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, 
-      #{period,jdbcType=INTEGER}, #{test,jdbcType=INTEGER}, #{createId,jdbcType=INTEGER}, 
+      #{period,jdbcType=INTEGER}, #{test,jdbcType=INTEGER}, #{createId,jdbcType=INTEGER}, #{applicant, jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR}
       )
   </insert>
@@ -55,6 +56,9 @@
       </if>
       <if test="createId != null" >
         create_id,
+      </if>
+      <if test="applicant != null" >
+        applicant,
       </if>
       <if test="createDate != null" >
         create_date,
@@ -84,6 +88,9 @@
       </if>
       <if test="createId != null" >
         #{createId,jdbcType=INTEGER},
+      </if>
+      <if test="applicant != null and applicant != ''">
+        #{applicant},
       </if>
       <if test="createDate != null" >
         #{createDate,jdbcType=TIMESTAMP},
@@ -123,6 +130,9 @@
       <if test="reason != null" >
         reason = #{reason,jdbcType=VARCHAR},
       </if>
+      <if test="applicant != null and applicant != ''">
+        applicant = #{applicant}
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -133,6 +143,7 @@
       period = #{period,jdbcType=INTEGER},
       test = #{test,jdbcType=INTEGER},
       create_id = #{createId,jdbcType=INTEGER},
+      applicant = #{applicant, jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=INTEGER},
       reason = #{reason,jdbcType=VARCHAR}
