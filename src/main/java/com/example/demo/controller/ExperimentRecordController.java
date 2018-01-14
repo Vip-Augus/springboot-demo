@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.example.demo.model.ExperimentMessage;
 import com.example.demo.model.ExperimentRecord;
-import com.example.demo.service.ExperimentRecordService;
-import com.example.demo.service.FileManageService;
+import com.example.demo.model.Notice;
+import com.example.demo.model.User;
+import com.example.demo.service.*;
+import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 实验课记录控制器
@@ -35,6 +41,17 @@ public class ExperimentRecordController {
     @Autowired
     private FileManageService fileManageServiceImpl;
 
+    @Autowired
+    private ExperimentMessageService messageService;
+
+    @Autowired
+    private NoticeService noticeService;
+
+    @Autowired
+    private ExperimentUserService experimentUserService;
+
+    @Autowired
+    private ExperimentService experimentService;
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
     public JSON addRecord(@RequestParam("epName") String epName,
@@ -55,6 +72,7 @@ public class ExperimentRecordController {
                 ExperimentRecord record = convertRecord(epName, epId, uploadEndTime, url, classroomId);
                 result.returnSuccess(experimentRecordServiceImpl.add(record));
                 log.info("成功添加实验记录:", record.getId());
+                sendMessage(record, request);
             } catch (Exception e) {
                 log.error("发布实验失败: ", epName, e);
                 result.returnError("发布实验失败");
@@ -126,5 +144,48 @@ public class ExperimentRecordController {
         record.setEpFileUrl(fileUrl);
         record.setClassroomId(classroomId);
         return record;
+    }
+
+    private void sendMessage(ExperimentRecord record, HttpServletRequest request) {
+        try {
+            User user = SessionUtil.getUser(request.getSession());
+            Notice notice = new Notice();
+            notice.setTitle("创建实验课" + record.getEpName() + "通知");
+            notice.setContent(getContent(record));
+            notice.setCreateId(user.getId());
+            notice.setEpId(record.getEpId());
+            notice.setCreateTime(new Date());
+            noticeService.add(notice);
+            List<Integer> studentIds = experimentUserService.getUserIdsByEpId(record.getEpId());
+            new Thread() {
+                @Override
+                public void run() {
+                    for(Integer id : studentIds) {
+                        ExperimentMessage message = new ExperimentMessage();
+                        message.setFromId(user.getId());
+                        message.setToId(id);
+                        message.setEpId(record.getEpId());
+                        message.setTitle(notice.getTitle());
+                        message.setContent(notice.getContent());
+                        message.setHasRead(0);
+                        message.setCreatedDate(new Date());
+                        message.setConversationId(message.getConversationId());
+                        messageService.addMessage(message);
+                    }
+                }
+            }.start();
+        } catch (Exception e) {
+            log.error("发送消息失败：", e);
+        }
+    }
+
+    private String getContent(ExperimentRecord record) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("您的实验课： ");
+        sb.append(experimentService.getById(record.getEpId()).getName());
+        sb.append(" 发布了新的实验：");
+        sb.append(record.getEpName());
+        sb.append(", 请前往【查看实验课】模块查看详情。");
+        return sb.toString();
     }
 }

@@ -62,7 +62,8 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
 
     @Override
     public List<ExperimentMessage> getReceiveList(int toId, int state, int offset, int limit) {
-        List<ExperimentMessage> messages = messageDAO.getReceiveMessageList(toId, state, offset, limit);
+        List<ExperimentMessage> messages;
+        messages = messageDAO.getReceiveMessageList(toId, state, offset, limit);
         if(messages == null) {
             return Collections.emptyList();
         }

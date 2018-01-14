@@ -74,7 +74,9 @@
     FROM
     <include refid="table"/>
     WHERE to_id = #{toId}
-    AND has_read = #{hasRead}
+    <if test="hasRead != 2">
+      AND has_read = #{hasRead}
+    </if>
     ORDER BY created_date DESC
     LIMIT #{offset},#{limit}
   </select>
