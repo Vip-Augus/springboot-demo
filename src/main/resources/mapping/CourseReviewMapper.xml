@@ -155,6 +155,7 @@
     <include refid="Base_Column_List" />
     from course_review
     where state = #{state,jdbcType=INTEGER}
+    ORDER BY create_date DESC
   </select>
 
   <update id="updateReviewState" parameterType="java.lang.Integer">

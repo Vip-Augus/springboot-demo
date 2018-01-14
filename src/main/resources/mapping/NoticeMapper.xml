@@ -108,7 +108,9 @@
     <include refid="Base_Column_List" />
     from notice
     WHERE ep_id = 0
+    ORDER BY create_time DESC
     limit #{offset},#{limit}
+
 
   </select>
 
@@ -118,6 +120,7 @@
     from notice
     WHERE ep_id != 0
     AND create_id = #{userId}
+    ORDER BY create_time DESC
     limit #{offset},#{limit}
 
   </select>

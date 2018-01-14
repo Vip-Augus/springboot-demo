@@ -130,5 +130,6 @@
     select
     <include refid="Base_Column_List" />
     from course
+    ORDER BY modify_date DESC
   </select>
 </mapper>
