@@ -90,8 +90,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserAuth(User user) {
-        return userMapper.updateUser(user);
+    public boolean updateUserAuth(Integer userId, String auth, Integer type) {
+        return userMapper.updateAuth(userId, auth, type);
     }
 
     @Override

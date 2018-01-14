@@ -106,11 +106,11 @@ public class UserController {
     @RequestMapping(value = "teacher", method = RequestMethod.GET)
     @ResponseBody
     public JSON getUserByType(HttpServletRequest request) {
-        List<User> userList = Lists.newArrayList();
-        SingleResult<List<User>> result = new SingleResult<>();
+        List<UserDTO> userList = Lists.newArrayList();
+        SingleResult<List<UserDTO>> result = new SingleResult<>();
         try {
             int page = StringUtil.getInteger(request.getParameter("page"));
-            userList = userServiceImpl.getTeachers(page * PAGE_SIZE, PAGE_SIZE);
+            userList = userConverter.users2DTOS(userServiceImpl.getTeachers(page * PAGE_SIZE, PAGE_SIZE));
         } catch (Exception e) {
             result.returnError(e.getMessage());
             return (JSON) JSON.toJSON(result);
@@ -120,12 +120,12 @@ public class UserController {
     }
 
     //根据idNumber删除User
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    @RequestMapping(value = "delete", method = RequestMethod.GET)
     @ResponseBody
-    public JSON deleteByIdNumber(@RequestBody User userParam, HttpServletRequest request) {
+    public JSON deleteByIdNumber(@RequestParam("idNumber") String idNumber, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
         try {
-            Boolean deleteBoolean = userServiceImpl.deleteByIdNumber(userParam.getIdNumber());
+            Boolean deleteBoolean = userServiceImpl.deleteByIdNumber(idNumber);
             if(!deleteBoolean) {
                 result.returnError(CodeConstants.NO_DATA);
                 return (JSON) JSON.toJSON(result);
@@ -141,24 +141,15 @@ public class UserController {
     //根据idNumber更新UserAuthority
     @RequestMapping(value = "auth", method = RequestMethod.POST)
     @ResponseBody
-    public JSON updateUserAuth(@RequestBody User user, HttpServletRequest request) {
+    public JSON updateUserAuth(@RequestParam("userId") Integer userId, @RequestParam("auth") String auth, HttpServletRequest request) {
         SingleResult<List<User>> result = new SingleResult<>();
         try {
-            //User user2 = SessionUtil.getUser(request.getSession());
-            String authority = user.getAuthority();
-            Integer auth = Integer.valueOf(authority,16);
-            /*String authNumber = user.getAuthority();
-            Integer authNum = Integer.valueOf(authNumber,16);
-            auth |= authNum;
-            String auth_s = Integer.toHexString(auth).toUpperCase();
-            user.setAuthority(auth_s);*/
-            if((auth & 1) == 1) {
-                user.setType(0);
+            Integer authority = Integer.valueOf(auth,2);
+            Integer type = 1;
+            if((authority & 1) == 1) {
+                type = 0;
             }
-            else {
-                user.setType(1);
-            }
-            Boolean updateBoolean = userServiceImpl.updateUserAuth(user);
+            Boolean updateBoolean = userServiceImpl.updateUserAuth(userId, String.valueOf(authority), type);
             if(!updateBoolean) {
                 result.returnError("更新失败");
                 return (JSON) JSON.toJSON(result);

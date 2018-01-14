@@ -138,6 +138,7 @@
         <include refid="Base_Column_List" />
         from `user`
         where type = 0 or type = 1
+        ORDER BY id_number
         LIMIT #{offset},#{limit}
     </select>
     <delete id="deleteByIdNumber" parameterType="java.lang.String" >
@@ -182,5 +183,13 @@
             </if>
         </set>
         where id_number = #{idNumber,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateAuth">
+        UPDATE `user`
+        SET
+        authority = #{authority,jdbcType=CHAR},
+        type = #{type, jdbcType=INTEGER}
+        where id = #{userId, jdbcType=INTEGER}
     </update>
 </mapper>

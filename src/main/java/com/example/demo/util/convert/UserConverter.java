@@ -2,8 +2,13 @@ package com.example.demo.util.convert;
 
 import com.example.demo.model.User;
 import com.example.demo.model.dto.UserDTO;
+import com.google.common.reflect.TypeToken;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * 用户信息转换器
@@ -16,7 +21,10 @@ public class UserConverter extends ModelMapper {
         if (user == null) {
             return null;
         }
-        return this.map(user, UserDTO.class);
+        UserDTO userDTO = this.map(user, UserDTO.class);
+        String authority = StringUtils.leftPad(Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority())), 4, "0");
+        userDTO.setAuthority(authority);
+        return userDTO;
     }
 
     public User dto2User(UserDTO dto) {
@@ -24,5 +32,24 @@ public class UserConverter extends ModelMapper {
             return null;
         }
         return this.map(dto, User.class);
+    }
+
+    /**
+     * 补齐权限的前缀0
+     *
+     * @param users users
+     * @return userDTO
+     */
+    public List<UserDTO> users2DTOS(List<User> users) {
+        if (CollectionUtils.isEmpty(users)) {
+            return null;
+        }
+        List<UserDTO> userDTOS = this.map(users, new TypeToken<List<UserDTO>>() {
+        }.getType());
+        for (UserDTO userDTO : userDTOS) {
+            String authority = StringUtils.leftPad(Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority())), 4, "0");
+            userDTO.setAuthority(authority);
+        }
+        return userDTOS;
     }
 }

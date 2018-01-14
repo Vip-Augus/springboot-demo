@@ -55,10 +55,11 @@ public interface UserService extends BaseServiceTemplate<User> {
 
     /**
      * 修改User
-     * @param user
+     * @param userId    用户id
+     * @param auth    权限
      * @return
      */
-    boolean updateUserAuth(User user);
+    boolean updateUserAuth(Integer userId, String auth, Integer type);
 
     /**
      * 批量导入用户
