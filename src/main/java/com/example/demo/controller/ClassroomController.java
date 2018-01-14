@@ -8,6 +8,7 @@ import com.example.demo.model.dto.ClassroomQueryParam;
 import com.example.demo.service.ClassroomService;
 import com.example.demo.service.ExperimentRecordService;
 import com.example.demo.util.PeriodUtil;
+import com.example.demo.util.result.BusinessException;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import org.slf4j.Logger;
@@ -50,6 +51,10 @@ public class ClassroomController {
         try {
             classroom = classroomServiceImpl.add(classroom);
             LOGGER.info("成功添加实验室: ", classroom);
+        } catch (BusinessException e) {
+            LOGGER.error("添加实验室失败: ", e);
+            result.returnError(e);
+            return (JSON) JSON.toJSON(result);
         } catch (Exception e) {
             LOGGER.error("添加实验室失败: ", e);
             result.returnError(e.getMessage());

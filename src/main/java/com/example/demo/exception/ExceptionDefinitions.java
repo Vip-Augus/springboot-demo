@@ -14,4 +14,9 @@ public class ExceptionDefinitions {
      * 重新登录
      */
     public static final BusinessException LOGIN_AGAIN = new BusinessException("11111111", CodeConstants.LOGIN_AGAIN);
+
+    /**
+     * 实验室已存在
+     */
+    public static final BusinessException CLASSROOM_CONFLICT = new BusinessException("CL000001", "实验室已存在");
 }

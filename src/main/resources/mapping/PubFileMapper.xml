@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.PubFileMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.model.PubFile">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_directory" jdbcType="TINYINT" property="isDirectory" />
+    <result column="file_url" jdbcType="VARCHAR" property="fileUrl" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="parent_path" jdbcType="VARCHAR" property="parentPath" />
+    <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+    <result column="modify_date" jdbcType="VARCHAR" property="modifyDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, is_directory, file_url, create_id, parent_path, create_date, modify_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pub_file
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM pub_file
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pub_file
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.PubFile">
+    insert into pub_file ( name, is_directory,
+      file_url, create_id, parent_path, create_date,
+      modify_date)
+    values (#{name,jdbcType=VARCHAR}, #{isDirectory,jdbcType=TINYINT},
+      #{fileUrl,jdbcType=VARCHAR}, #{createId, jdbcType=INTEGER},
+      #{parentPath,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR},
+      #{modifyDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.demo.model.PubFile">
+    insert into pub_file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="isDirectory != null">
+        is_directory,
+      </if>
+      <if test="fileUrl != null">
+        file_url,
+      </if>
+      <if test="createId != null">
+        create_id,
+      </if>
+      <if test="parentPath != null">
+        parent_path,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="modifyDate != null">
+        modify_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="isDirectory != null">
+        #{isDirectory,jdbcType=TINYINT},
+      </if>
+      <if test="fileUrl != null">
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null">
+        #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentPath != null">
+        #{parentPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyDate != null">
+        #{modifyDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.PubFile">
+    update pub_file
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="isDirectory != null">
+        is_directory = #{isDirectory,jdbcType=TINYINT},
+      </if>
+      <if test="fileUrl != null">
+        file_url = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="parentPath != null">
+        parent_path = #{parentPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyDate != null">
+        modify_date = #{modifyDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.PubFile">
+    update pub_file
+    set name = #{name,jdbcType=VARCHAR},
+      is_directory = #{isDirectory,jdbcType=TINYINT},
+      file_url = #{fileUrl,jdbcType=VARCHAR},
+      parent_path = #{parentPath,jdbcType=VARCHAR},
+      create_id = #{createId, jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=VARCHAR},
+      modify_date = #{modifyDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

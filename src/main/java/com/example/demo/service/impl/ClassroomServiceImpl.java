@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dao.ClassroomMapper;
+import com.example.demo.exception.ExceptionDefinitions;
 import com.example.demo.model.Classroom;
 import com.example.demo.model.Experiment;
 import com.example.demo.model.dto.ClassroomQueryParam;
@@ -9,9 +10,11 @@ import com.example.demo.model.enums.ClassroomStatus;
 import com.example.demo.service.ClassroomService;
 import com.example.demo.service.ExperimentService;
 import com.example.demo.util.PeriodUtil;
+import com.example.demo.util.result.BusinessException;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,6 +49,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 
     @Override
     public Classroom add(Classroom record) {
+        ClassroomQueryParam queryParam = new ClassroomQueryParam();
+        queryParam.setBuildingNumber(record.getBuildingNumber());
+        queryParam.setClassroom(record.getClassroom());
+        if (!CollectionUtils.isEmpty(classroomMapper.query(queryParam))) {
+            throw new BusinessException(ExceptionDefinitions.CLASSROOM_CONFLICT);
+        }
         classroomMapper.insert(record);
         return record;
     }
