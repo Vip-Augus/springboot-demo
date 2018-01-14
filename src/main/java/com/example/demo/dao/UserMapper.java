@@ -44,7 +44,7 @@ public interface UserMapper extends BaseMapperTemplate<User> {
      *
      * @return
      */
-    List<User> selectTeachers(@Param("offset") int offset, @Param("limit") int limit);
+    List<User> selectTeachers(@Param("offset") int offset, @Param("limit") int limit, @Param("name") String name);
 
     /**
      * 根据idNumber删除User
