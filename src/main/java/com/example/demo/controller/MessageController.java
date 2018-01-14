@@ -1,30 +1,21 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.model.*;
 import com.example.demo.model.dto.MessageListDTO;
-import com.example.demo.model.dto.UserDTO;
 import com.example.demo.model.enums.UserType;
 import com.example.demo.service.*;
-import com.example.demo.util.CodeConstants;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.StringUtil;
 import com.example.demo.util.result.ListResult;
-import com.example.demo.util.result.Result;
 import com.example.demo.util.result.SingleResult;
 import com.google.common.collect.Lists;
-import org.omg.CORBA.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -122,7 +113,7 @@ public class MessageController {
             dto.setTitle(notice.getTitle());
             dto.setContent(notice.getContent());
             dto.setCreatedDate(notice.getCreateTime());
-            dto.setEqName(experimentService.getById(notice.getEpId()).getName());
+            dto.setEpName(experimentService.getById(notice.getEpId()).getName());
             dto.setSendUserName(userService.getById(notice.getCreateId()).getName());
             dto.setHasRead(1);
             dtos.add(dto);

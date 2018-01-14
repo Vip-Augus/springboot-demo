@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.ExperimentMessageMapper;
 import com.example.demo.model.ExperimentMessage;
-import com.example.demo.model.User;
 import com.example.demo.model.dto.MessageListDTO;
 import com.example.demo.service.ExperimentMessageService;
 import com.example.demo.service.ExperimentService;
@@ -12,11 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.HtmlUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by GJW on 2018/1/5.
@@ -97,7 +94,7 @@ public class ExperimentMessageServiceImpl implements ExperimentMessageService {
             dto.setTitle(message.getTitle());
             dto.setContent(message.getContent());
             dto.setCreatedDate(message.getCreatedDate());
-            dto.setEqName(experimentService.getById(message.getEpId()).getName());
+            dto.setEpName(experimentService.getById(message.getEpId()).getName());
             dto.setSendUserName(userService.getById(message.getFromId()).getName());
             dto.setHasRead(message.getHasRead());
             dtos.add(dto);

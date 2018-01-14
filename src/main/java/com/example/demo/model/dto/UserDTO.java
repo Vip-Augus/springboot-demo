@@ -27,6 +27,25 @@ public class UserDTO implements Serializable{
 
     private String authority;
 
+    private String profession;
+
+    private String classTitle;
+
+    private String joinTime;
+
+    private String nativePlace;
+
+    private String ethnic;
+
+    private Integer gender;
+
+    private String political;
+
+    private String email;
+
+    private String introduction;
+
+
     public Integer getId() {
         return id;
     }
@@ -97,6 +116,78 @@ public class UserDTO implements Serializable{
 
     public void setAuthority(String authority) {
         this.authority = authority;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public String getClassTitle() {
+        return classTitle;
+    }
+
+    public void setClassTitle(String classTitle) {
+        this.classTitle = classTitle;
+    }
+
+    public String getJoinTime() {
+        return joinTime;
+    }
+
+    public void setJoinTime(String joinTime) {
+        this.joinTime = joinTime;
+    }
+
+    public String getNativePlace() {
+        return nativePlace;
+    }
+
+    public void setNativePlace(String nativePlace) {
+        this.nativePlace = nativePlace;
+    }
+
+    public String getEthnic() {
+        return ethnic;
+    }
+
+    public void setEthnic(String ethnic) {
+        this.ethnic = ethnic;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public String getPolitical() {
+        return political;
+    }
+
+    public void setPolitical(String political) {
+        this.political = political;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     @Override

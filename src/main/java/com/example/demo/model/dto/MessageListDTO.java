@@ -14,7 +14,7 @@ public class MessageListDTO {
     private String title;
     private String content;
     private Date createdDate;
-    private String eqName;
+    private String epName;
     private String sendUserName;
     private int hasRead;
 }
