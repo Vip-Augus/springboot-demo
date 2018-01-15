@@ -7,12 +7,15 @@
     <result column="is_directory" jdbcType="TINYINT" property="isDirectory" />
     <result column="file_url" jdbcType="VARCHAR" property="fileUrl" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
     <result column="parent_path" jdbcType="VARCHAR" property="parentPath" />
     <result column="create_date" jdbcType="VARCHAR" property="createDate" />
     <result column="modify_date" jdbcType="VARCHAR" property="modifyDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, is_directory, file_url, create_id, parent_path, create_date, modify_date
+    id, name, is_directory, file_url, create_id, upload_date, id_number,
+    parent_path, create_date, modify_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,10 +34,11 @@
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.PubFile">
     insert into pub_file ( name, is_directory,
-      file_url, create_id, parent_path, create_date,
+      file_url, create_id, id_number, upload_date, parent_path, create_date,
       modify_date)
     values (#{name,jdbcType=VARCHAR}, #{isDirectory,jdbcType=TINYINT},
       #{fileUrl,jdbcType=VARCHAR}, #{createId, jdbcType=INTEGER},
+      #{idNumber, jdbcType=VARCHAR}, #{uploadDate, jdbcType=TIMESTAMP},
       #{parentPath,jdbcType=VARCHAR}, #{createDate,jdbcType=VARCHAR},
       #{modifyDate,jdbcType=VARCHAR})
   </insert>
@@ -55,6 +59,12 @@
       </if>
       <if test="createId != null">
         create_id,
+      </if>
+      <if test="idNumber != null">
+        id_number,
+      </if>
+      <if test="uploadDate != null">
+        upload_date,
       </if>
       <if test="parentPath != null">
         parent_path,
@@ -81,6 +91,12 @@
       </if>
       <if test="createId != null">
         #{createId,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        idNumber,
+      </if>
+      <if test="uploadDate != null">
+        uploadDate,
       </if>
       <if test="parentPath != null">
         #{parentPath,jdbcType=VARCHAR},
@@ -124,6 +140,8 @@
       file_url = #{fileUrl,jdbcType=VARCHAR},
       parent_path = #{parentPath,jdbcType=VARCHAR},
       create_id = #{createId, jdbcType=INTEGER},
+      id_number = #{idNumber, jdbcType=VARCHAR},
+      upload_date = #{uploadDate, jdbcType=TIMESTAMP},
       create_date = #{createDate,jdbcType=VARCHAR},
       modify_date = #{modifyDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

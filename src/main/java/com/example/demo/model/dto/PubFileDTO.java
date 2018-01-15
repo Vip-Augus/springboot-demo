@@ -3,6 +3,7 @@ package com.example.demo.model.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 公共文件DTO
@@ -23,6 +24,12 @@ public class PubFileDTO implements Serializable{
     private String fileUrl;
 
     private Integer createId;
+
+    private Date uploadDate;
+
+    private String uploadTime;
+
+    private String idNumber;
 
     private String parentPath;
 

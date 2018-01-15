@@ -2,6 +2,7 @@ package com.example.demo.util.convert;
 
 import com.example.demo.model.PubFile;
 import com.example.demo.model.dto.PubFileDTO;
+import com.example.demo.util.PeriodUtil;
 import com.google.common.reflect.TypeToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -38,8 +39,12 @@ public class PubFileConverter extends ModelMapper {
         if (CollectionUtils.isEmpty(files)) {
             return null;
         }
-        return this.map(files, new TypeToken<List<PubFileDTO>>() {
+        List<PubFileDTO> fileDTOS = this.map(files, new TypeToken<List<PubFileDTO>>() {
         }.getType());
+        for (PubFileDTO dto : fileDTOS) {
+            dto.setUploadTime(PeriodUtil.format(dto.getUploadDate(), "yyyy-MM-dd HH:mm:ss"));
+        }
+        return fileDTOS;
     }
 
 }

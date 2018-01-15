@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 公共文件
@@ -21,6 +22,10 @@ public class PubFile implements Serializable {
 
     private Integer createId;
 
+    private Date uploadDate;
+
+    private String idNumber;
+
     private String parentPath;
 
     private String createDate;
@@ -40,7 +45,7 @@ public class PubFile implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     public Integer getIsDirectory() {
@@ -56,7 +61,7 @@ public class PubFile implements Serializable {
     }
 
     public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl == null ? null : fileUrl.trim();
+        this.fileUrl = fileUrl;
     }
 
     public Integer getCreateId() {
@@ -67,12 +72,28 @@ public class PubFile implements Serializable {
         this.createId = createId;
     }
 
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
     public String getParentPath() {
         return parentPath;
     }
 
     public void setParentPath(String parentPath) {
-        this.parentPath = parentPath == null ? null : parentPath.trim();
+        this.parentPath = parentPath;
     }
 
     public String getCreateDate() {
@@ -80,7 +101,7 @@ public class PubFile implements Serializable {
     }
 
     public void setCreateDate(String createDate) {
-        this.createDate = createDate == null ? null : createDate.trim();
+        this.createDate = createDate;
     }
 
     public String getModifyDate() {
@@ -88,59 +109,6 @@ public class PubFile implements Serializable {
     }
 
     public void setModifyDate(String modifyDate) {
-        this.modifyDate = modifyDate == null ? null : modifyDate.trim();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        PubFile other = (PubFile) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getIsDirectory() == null ? other.getIsDirectory() == null : this.getIsDirectory().equals(other.getIsDirectory()))
-            && (this.getFileUrl() == null ? other.getFileUrl() == null : this.getFileUrl().equals(other.getFileUrl()))
-            && (this.getParentPath() == null ? other.getParentPath() == null : this.getParentPath().equals(other.getParentPath()))
-            && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
-            && (this.getModifyDate() == null ? other.getModifyDate() == null : this.getModifyDate().equals(other.getModifyDate()));
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getIsDirectory() == null) ? 0 : getIsDirectory().hashCode());
-        result = prime * result + ((getFileUrl() == null) ? 0 : getFileUrl().hashCode());
-        result = prime * result + ((getParentPath() == null) ? 0 : getParentPath().hashCode());
-        result = prime * result + ((getCreateDate() == null) ? 0 : getCreateDate().hashCode());
-        result = prime * result + ((getModifyDate() == null) ? 0 : getModifyDate().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", isDirectory=").append(isDirectory);
-        sb.append(", fileUrl=").append(fileUrl);
-        sb.append(", parentPath=").append(parentPath);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", modifyDate=").append(modifyDate);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        this.modifyDate = modifyDate;
     }
 }

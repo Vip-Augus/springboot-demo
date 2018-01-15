@@ -32,6 +32,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,7 +83,7 @@ public class FileController {
                 bis = new BufferedInputStream(file.getInputStream());
                 UploadObject object = new UploadObject(bis, fileName, BASE_PATH);
                 String url = fileManageService.upload(object);
-                pubFileServiceImpl.addPubFile(fileConverter.dto2DO(fillPubFile(fileName, url, user.getId())));
+                pubFileServiceImpl.addPubFile(fileConverter.dto2DO(fillPubFile(fileName, url, user.getIdNumber(), user.getId())));
             } catch (Exception ex) {
                 LOGGER.error("", ex);
                 result.returnError("上传失败!");
@@ -184,9 +185,11 @@ public class FileController {
         }
     }
 
-    private PubFileDTO fillPubFile(String fileName, String url, Integer userId) {
+    private PubFileDTO fillPubFile(String fileName, String url, String idNumber, Integer userId) {
         PubFileDTO pubFile = new PubFileDTO();
         pubFile.setName(fileName);
+        pubFile.setUploadDate(new Date());
+        pubFile.setIdNumber(idNumber);
         pubFile.setCreateId(userId);
         pubFile.setFileUrl(url);
         //先设一个默认值
