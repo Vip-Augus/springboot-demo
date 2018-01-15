@@ -24,6 +24,12 @@ public class ExperimentDetail implements Serializable{
 
     private Integer epId;
 
+    private String score;
+
+    private String comment;
+
+    private String uploadName;
+
     private Integer epRecordId;
 
     private Integer userId;
@@ -98,6 +104,30 @@ public class ExperimentDetail implements Serializable{
 
     public void setEpRecordId(Integer epRecordId) {
         this.epRecordId = epRecordId;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getUploadName() {
+        return uploadName;
+    }
+
+    public void setUploadName(String uploadName) {
+        this.uploadName = uploadName;
     }
 
     @Override

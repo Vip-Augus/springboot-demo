@@ -51,7 +51,7 @@ public class ExperimentDetailController {
             log.error("上传失败: ", e);
             return (JSON) JSON.toJSON(e.getMessage());
         }
-        ExperimentDetail record = convertDetail(epId, epRecordId, user.getId(), url, file.getOriginalFilename());
+        ExperimentDetail record = convertDetail(epId, epRecordId, user.getName(), user.getId(), url, file.getOriginalFilename());
         insertScore(epRecordId, user.getId());
         result.returnSuccess(experimentDetailServiceImpl.add(record));
         log.info("上传成功: epDetailId:", record.getId());
@@ -140,12 +140,13 @@ public class ExperimentDetailController {
         return (JSON) JSON.toJSON(result);
     }
 
-    private ExperimentDetail convertDetail(Integer epId, Integer epRecordId, Integer userId, String fileUrl, String fileName) {
+    private ExperimentDetail convertDetail(Integer epId, Integer epRecordId, String userName, Integer userId, String fileUrl, String fileName) {
         ExperimentDetail detail = new ExperimentDetail();
         detail.setEpId(epId);
         detail.setEpRecordId(epRecordId);
         detail.setUserId(userId);
         detail.setEpFileName(fileName);
+        detail.setUploadName(userName);
         detail.setEpFileUrl(fileUrl);
         return detail;
     }

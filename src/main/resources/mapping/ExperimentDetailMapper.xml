@@ -11,9 +11,14 @@
     <result column="ep_id" property="epId" jdbcType="INTEGER" />
     <result column="ep_record_id" property="epRecordId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="upload_name" property="uploadName" jdbcType="VARCHAR"/>
+
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ep_file_url, ep_file_name, upload_date, create_date, modify_date, ep_id, ep_record_id, user_id
+    id, ep_file_url, ep_file_name, upload_date, create_date, modify_date, ep_id, ep_record_id, user_id, score,
+    upload_name, comment
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -44,10 +49,11 @@
     </selectKey>
     insert into experiment_detail (id, ep_file_url, ep_file_name, 
       upload_date, create_date,
-      ep_id, ep_record_id, user_id)
+      ep_id, ep_record_id, user_id, score, comment, upload_name)
     values (#{id, jdbcType=INTEGER}, #{epFileUrl,jdbcType=VARCHAR}, #{epFileName,jdbcType=VARCHAR},
       sysdate() + '0', sysdate() + '0',
-      #{epId,jdbcType=INTEGER}, #{epRecordId,jdbcType=INTEGER}, #{userId, jdbcType=INTEGER})
+      #{epId,jdbcType=INTEGER}, #{epRecordId,jdbcType=INTEGER}, #{userId, jdbcType=INTEGER},
+      #{score, jdbcType=VARCHAR}, #{comment, jdbcType=VARCHAR}, #{uploadName, jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentDetail" >
     update experiment_detail
@@ -57,7 +63,10 @@
       modify_date = sysdate() + '0',
       ep_id = #{epId,jdbcType=INTEGER},
       ep_record_id = #{epRecordId,jdbcType=INTEGER},
-      user_id = #{userId, jdbcType=INTEGER}
+      user_id = #{userId, jdbcType=INTEGER},
+      score = #{score, jdbcType=VARCHAR},
+      comment = #{comment, jdbcType=VARCHAR},
+      upload_name = #{uploadName, jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
