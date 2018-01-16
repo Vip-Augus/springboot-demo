@@ -11,7 +11,7 @@ public enum AuthorityType {
     /**
      * 0对应authority字段右边第一位
      */
-    ALL_AUTHORITY(0, "全部权限"),
+    AUTHORITY_PERMISSION(0, "权限分配"),
 
     COURSE_REVIEW(1, "课程审核"),
 
