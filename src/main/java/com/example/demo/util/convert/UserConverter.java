@@ -24,8 +24,11 @@ public class UserConverter extends ModelMapper {
             return null;
         }
         UserDTO userDTO = this.map(user, UserDTO.class);
-        String authority = StringUtils.leftPad(Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority())), 4, "0");
-        userDTO.setAuthority(authority);
+        String auth = Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority(), 16));
+        if (auth.length() < 4 ){
+            auth = StringUtils.leftPad(auth, 4, "0");
+        }
+        userDTO.setAuthority(auth);
         return userDTO;
     }
 
@@ -49,8 +52,11 @@ public class UserConverter extends ModelMapper {
         List<UserDTO> userDTOS = this.map(users, new TypeToken<List<UserDTO>>() {
         }.getType());
         for (UserDTO userDTO : userDTOS) {
-            String authority = StringUtils.leftPad(Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority())), 4, "0");
-            userDTO.setAuthority(authority);
+            String auth = Integer.toBinaryString(Integer.valueOf(userDTO.getAuthority(), 16));
+            if (auth.length() < 4 ){
+                auth = StringUtils.leftPad(auth, 4, "0");
+            }
+            userDTO.setAuthority(auth);
         }
         return userDTOS;
     }

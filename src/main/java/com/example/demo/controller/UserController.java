@@ -162,10 +162,10 @@ public class UserController {
         try {
             Integer authority = Integer.valueOf(auth, 2);
             Integer type = 1;
-            if ((authority & 1) == 1) {
-                type = 0;
-            }
-            Boolean updateBoolean = userServiceImpl.updateUserAuth(userId, String.valueOf(authority), type);
+//            if ((authority & 1) == 1) {
+//                type = 0;
+//            }
+            Boolean updateBoolean = userServiceImpl.updateUserAuth(userId, Integer.toHexString(authority), type);
             if (!updateBoolean) {
                 result.returnError("更新失败");
                 return (JSON) JSON.toJSON(result);
