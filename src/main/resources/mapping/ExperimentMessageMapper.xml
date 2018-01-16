@@ -65,7 +65,7 @@
 
   <update id="updateStatus" parameterType="java.lang.Integer">
     UPDATE message
-    SET status = #{status} where id = #{id}
+    SET has_read = #{status} where id = #{id}
   </update>
 
   <select id="getReceiveMessageList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -90,5 +90,12 @@
     GROUP BY ep_id
     ORDER BY created_date DESC
     LIMIT #{offset},#{limit}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    SELECT
+    <include refid="selectFields" />
+    FROM
+    <include refid="table"/>
+    where id = #{id}
   </select>
 </mapper>

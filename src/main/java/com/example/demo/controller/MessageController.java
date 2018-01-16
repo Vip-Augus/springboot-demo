@@ -50,7 +50,7 @@ public class MessageController {
         try {
             User user = SessionUtil.getUser(request.getSession());
             ExperimentMessage message;
-            if(user.getType().equals( UserType.STUDENT)) {
+            if(user.getType().equals( UserType.STUDENT.getCode())) {
                 message = messageService.getById(id);
                 messageService.updateMessage(message.getId(), 1);
             } else {
