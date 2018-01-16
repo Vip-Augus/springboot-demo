@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.example.demo.model.ExperimentDetail;
 import com.example.demo.model.ExperimentMessage;
 import com.example.demo.model.ExperimentRecord;
 import com.example.demo.model.Notice;
@@ -10,6 +11,11 @@ import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -52,6 +61,10 @@ public class ExperimentRecordController {
 
     @Autowired
     private ExperimentService experimentService;
+
+    @Autowired
+    private ExperimentDetailService experimentDetailServiceImpl;
+
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
     public JSON addRecord(@RequestParam("epName") String epName,
@@ -136,6 +149,24 @@ public class ExperimentRecordController {
         return (JSON) JSON.toJSON(result);
     }
 
+    @RequestMapping(value = "export", method = RequestMethod.GET)
+    @ResponseBody
+    public void exportScore(@RequestParam("epRecordId")Integer epRecordId, HttpServletRequest request, HttpServletResponse response) {
+        ExperimentRecord record = experimentRecordServiceImpl.getById(epRecordId);
+        try {
+            List<ExperimentDetail> details = experimentDetailServiceImpl.getDetailsByEPRecordId(epRecordId, null);
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-disposition", "attachment;fileName="+ URLEncoder.encode(record.getEpName(), "UTF-8") + ".xls");
+            HSSFWorkbook wb = export(details, record.getEpName());
+            OutputStream ouputStream = response.getOutputStream();
+            wb.write(ouputStream);
+            ouputStream.flush();
+            ouputStream.close();
+        } catch (Exception e) {
+            log.error("导出分数失败: ", e);
+        }
+    }
+
     private ExperimentRecord convertRecord(String epName, Integer epId, String uploadEndTime, String fileUrl, Integer classroomId) {
         ExperimentRecord record = new ExperimentRecord();
         record.setEpId(epId);
@@ -187,5 +218,37 @@ public class ExperimentRecordController {
         sb.append(record.getEpName());
         sb.append(", 请前往【查看实验课】模块查看详情。");
         return sb.toString();
+    }
+
+
+    private static final String[] excelHeader = {"学号", "分数", "评语", "作业链接"};
+    private HSSFWorkbook export(List<ExperimentDetail> details, String sheetName) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFRow row = sheet.createRow((int) 0);
+        HSSFCellStyle style = wb.createCellStyle();
+
+        for (int i = 0; i < excelHeader.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            cell.setCellValue(excelHeader[i]);
+            cell.setCellStyle(style);
+            sheet.autoSizeColumn(i);
+        }
+
+        for (int i = 0; i < details.size(); i++) {
+            row = sheet.createRow(i + 1);
+            ExperimentDetail detail = details.get(i);
+            row.createCell(0).setCellValue(detail.getIdNumber());
+            row.createCell(1).setCellValue(detail.getScore());
+            row.createCell(2).setCellValue(detail.getComment());
+            row.createCell(3).setCellValue(detail.getEpFileUrl());
+        }
+
+        sheet.autoSizeColumn((short)0); //调整第一列宽度
+        sheet.autoSizeColumn((short)1); //调整第二列宽度
+        sheet.autoSizeColumn((short)2); //调整第三列宽度
+        sheet.autoSizeColumn((short)3); //调整第四列宽度
+
+        return wb;
     }
 }

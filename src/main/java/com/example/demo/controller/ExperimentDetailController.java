@@ -2,21 +2,31 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.model.ExperimentDetail;
+import com.example.demo.model.ExperimentRecord;
 import com.example.demo.model.Score;
 import com.example.demo.model.User;
 import com.example.demo.model.enums.UserType;
 import com.example.demo.service.ExperimentDetailService;
+import com.example.demo.service.ExperimentRecordService;
 import com.example.demo.service.FileManageService;
 import com.example.demo.service.ScoreService;
 import com.example.demo.util.SessionUtil;
 import com.example.demo.util.result.ListResult;
 import com.example.demo.util.result.SingleResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * 实验课作业记录
@@ -51,7 +61,7 @@ public class ExperimentDetailController {
             log.error("上传失败: ", e);
             return (JSON) JSON.toJSON(e.getMessage());
         }
-        ExperimentDetail record = convertDetail(epId, epRecordId, user.getName(), user.getId(), url, file.getOriginalFilename());
+        ExperimentDetail record = convertDetail(epId, epRecordId, user, url, file.getOriginalFilename());
         insertScore(epRecordId, user.getId());
         result.returnSuccess(experimentDetailServiceImpl.add(record));
         log.info("上传成功: epDetailId:", record.getId());
@@ -118,6 +128,8 @@ public class ExperimentDetailController {
         return (JSON) JSON.toJSON(result);
     }
 
+
+
     @RequestMapping(value = "list", method = RequestMethod.GET)
     @ResponseBody
     public JSON queryListByEPId(@RequestParam("epRecordId") Integer epRecordId, HttpServletRequest request) {
@@ -140,13 +152,14 @@ public class ExperimentDetailController {
         return (JSON) JSON.toJSON(result);
     }
 
-    private ExperimentDetail convertDetail(Integer epId, Integer epRecordId, String userName, Integer userId, String fileUrl, String fileName) {
+    private ExperimentDetail convertDetail(Integer epId, Integer epRecordId, User user, String fileUrl, String fileName) {
         ExperimentDetail detail = new ExperimentDetail();
         detail.setEpId(epId);
         detail.setEpRecordId(epRecordId);
-        detail.setUserId(userId);
+        detail.setUserId(user.getId());
         detail.setEpFileName(fileName);
-        detail.setUploadName(userName);
+        detail.setUploadName(user.getName());
+        detail.setIdNumber(user.getIdNumber());
         detail.setEpFileUrl(fileUrl);
         return detail;
     }
@@ -157,4 +170,6 @@ public class ExperimentDetailController {
         score.setStudentId(stuId);
         scoreServiceImpl.add(score);
     }
+
+
 }

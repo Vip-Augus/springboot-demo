@@ -34,6 +34,8 @@ public class ExperimentDetail implements Serializable{
 
     private Integer userId;
 
+    private String idNumber;
+
     public Integer getUserId() {
         return userId;
     }
@@ -128,6 +130,14 @@ public class ExperimentDetail implements Serializable{
 
     public void setUploadName(String uploadName) {
         this.uploadName = uploadName;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
     @Override

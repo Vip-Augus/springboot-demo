@@ -9,6 +9,7 @@
     <result column="create_date" property="createDate" jdbcType="VARCHAR" />
     <result column="modify_date" property="modifyDate" jdbcType="VARCHAR" />
     <result column="ep_id" property="epId" jdbcType="INTEGER" />
+    <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
     <result column="ep_record_id" property="epRecordId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="score" property="score" jdbcType="VARCHAR" />
@@ -18,7 +19,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, ep_file_url, ep_file_name, upload_date, create_date, modify_date, ep_id, ep_record_id, user_id, score,
-    upload_name, comment
+    upload_name, comment, id_number
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -49,10 +50,10 @@
     </selectKey>
     insert into experiment_detail (id, ep_file_url, ep_file_name, 
       upload_date, create_date,
-      ep_id, ep_record_id, user_id, score, comment, upload_name)
+      ep_id, ep_record_id, user_id, id_number, score, comment, upload_name)
     values (#{id, jdbcType=INTEGER}, #{epFileUrl,jdbcType=VARCHAR}, #{epFileName,jdbcType=VARCHAR},
       sysdate() + '0', sysdate() + '0',
-      #{epId,jdbcType=INTEGER}, #{epRecordId,jdbcType=INTEGER}, #{userId, jdbcType=INTEGER},
+      #{epId,jdbcType=INTEGER}, #{epRecordId,jdbcType=INTEGER}, #{userId, jdbcType=INTEGER}, #{idNumber, jdbcType=VARCHAR},
       #{score, jdbcType=VARCHAR}, #{comment, jdbcType=VARCHAR}, #{uploadName, jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.model.ExperimentDetail" >
